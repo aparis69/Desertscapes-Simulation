@@ -23,12 +23,24 @@
     <ClInclude Include="..\Code\Include\vec.h">
       <Filter>Header Files</Filter>
     </ClInclude>
+    <ClInclude Include="..\Code\Include\desert.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="..\Code\Source\heightfield.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
     <ClCompile Include="..\Code\Source\main.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="..\Code\Source\desert-simulation.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="..\Code\Source\desert-flow.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="..\Code\Source\desert.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
   </ItemGroup>
