@@ -15,11 +15,12 @@ namespace Math
 	/*!
 	\brief
 	*/
-	inline float Clamp(float x, float a = 0.0f, float b = 1.0f)
+	template<typename T>
+	inline T Clamp(T x, T a = T(0), T b = T(1))
 	{
 		return x < a ? a : x > b ? b : x;
 	}
-
+	
 	/*!
 	\brief Create a linear step.
 	\param x Value
@@ -40,6 +41,22 @@ namespace Math
 		{
 			return (x - a) / (b - a);
 		}
+	}
+
+	/*!
+	\brief Check if a real number is not NaN.
+
+	The code is simply:
+	\code
+	return (x == x);
+	\endcode
+	This looks like it should always be true, but it's false if x is a NaN.
+	\param x Real value.
+	*/
+	template<typename T>
+	inline bool IsNumber(T x)
+	{
+		return (x == x);
 	}
 
 	template<typename T>
@@ -374,6 +391,10 @@ public:
 	bool operator==(const Vector2& u) const
 	{
 		return (x == u.x && y == u.y);
+	}
+	bool operator!=(const Vector2& u) const
+	{
+		return (x != u.x || y != u.y);
 	}
 	Vector2 operator-(const Vector2& u) const
 	{

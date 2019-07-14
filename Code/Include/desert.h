@@ -5,10 +5,10 @@
 class DuneSediment
 {
 private:
-	double tanThresholdAngleSediment = 0.60;		// ~33°
-	double tanThresholdAngleWindShadowMin = 0.08;	// ~5°
-	double tanThresholdAngleWindShadowMax = 0.26;	// ~15°
-	double tanThresholdAngleBedrock = 2.5;			// ~68°
+	float tanThresholdAngleSediment = 0.60f;		// ~33°
+	float tanThresholdAngleWindShadowMin = 0.08f;	// ~5°
+	float tanThresholdAngleWindShadowMax = 0.26f;	// ~15°
+	float tanThresholdAngleBedrock = 2.5f;			// ~68°
 
 	bool vegetationOn = false;
 	bool abrasionOn = false;
@@ -21,42 +21,41 @@ protected:
 
 	Box2D box;						//!< World space bounding box.
 	int nx, ny;						//!< Grid resolution.
-	double matterToMove;			//!< Amount of sand transported by the wind, in meter.
-	double cellSize;				//!< Size of one cell in meter, squared. Stored to speed up the simulation.
+	float matterToMove;			//!< Amount of sand transported by the wind, in meter.
+	float cellSize;				//!< Size of one cell in meter, squared. Stored to speed up the simulation.
 
 public:
 	DuneSediment();
-	DuneSediment(const Box2D& bbox, double rMin, double rMax);
+	DuneSediment(const Box2D& bbox, float rMin, float rMax);
 	~DuneSediment();
 
 	// Simulation
+	int ToIndex1D(const Vector2i& q) const;
+	int ToIndex1D(int i, int j) const;
 	void SimulationStepSingleThreadAtomic();
 	void SimulationStepMultiThreadAtomic();
 	void EndSimulationStep();
 	void SimulationStepWorldSpace(int id);
-	void VegetationStepAtomic(int id);
 	void PerformReptationOnCell(int i, int j, int bounce, int id);
 	void ComputeWindAtCell(int i, int j, Vector2& windDir) const;
-	double IsInShadow(int i, int j, const Vector2& wind) const;
+	float IsInShadow(int i, int j, const Vector2& wind) const;
 	void SnapWorld(Vector2& p) const;
-	int CheckSedimentFlowRelative(const QPoint& p, double tanThresholdAngle, QPoint* nei, double* nslope) const;
-	int CheckBedrockFlowRelative(const QPoint& p, double tanThresholdAngle, QPoint* nei, double * nslope) const;
+	int CheckSedimentFlowRelative(const Vector2i& p, float tanThresholdAngle, Vector2i* nei, float* nslope) const;
+	int CheckBedrockFlowRelative(const Vector2i& p, float tanThresholdAngle, Vector2i* nei, float * nslope) const;
 	void StabilizeSedimentRelative(int i, int j);
 	bool StabilizeBedrockRelative(int i, int j);
 	void StabilizeBedrockAll();
 	void PerformAbrasionOnCell(int i, int j, const Vector2& windDir);
-	void SmoothBedrock();
-	void SmoothSediments();
 
 	// Exports & Meshing
 	void ExportObj(const std::string& file) const;
 
 	// Inlined functions and query
-	double Height(int i, int j) const;
-	double Height(const Vector2& p) const;
-	double Bedrock(int i, int j) const;
-	double Sediment(int i, int j) const;
-	double Vegetation(int i, int j) const;
+	float Height(int i, int j) const;
+	float Height(const Vector2& p) const;
+	float Bedrock(int i, int j) const;
+	float Sediment(int i, int j) const;
+	float Vegetation(int i, int j) const;
 	void SetAbrasionMode(bool c);
 	void SetVegetationMode(bool c);
 	void SetHardnessData(const ScalarField2D& f);
@@ -66,9 +65,27 @@ public:
 };
 
 /*!
+\brief Compute the 1D index from a given grid vertex.
+\param q grid vertex.
+*/
+inline int DuneSediment::ToIndex1D(int i, int j) const
+{
+	return bedrock.ToIndex1D(i, j);
+}
+
+/*!
+\brief Compute the 1D index from a given grid vertex.
+\param q grid vertex.
+*/
+inline int DuneSediment::ToIndex1D(const Vector2i& q) const
+{
+	return bedrock.ToIndex1D(q);
+}
+
+/*!
 \brief
 */
-inline inline double DuneSediment::Height(int i, int j) const
+inline float DuneSediment::Height(int i, int j) const
 {
 	return bedrock.Get(i, j) + sediments.Get(i, j);
 }
@@ -76,7 +93,7 @@ inline inline double DuneSediment::Height(int i, int j) const
 /*!
 \brief
 */
-inline double DuneSediment::Height(const Vector2& p) const 
+inline float DuneSediment::Height(const Vector2& p) const 
 {
 	return bedrock.GetValueBilinear(p) + sediments.GetValueBilinear(p);
 }
@@ -84,7 +101,7 @@ inline double DuneSediment::Height(const Vector2& p) const
 /*!
 \brief
 */
-inline double DuneSediment::Bedrock(int i, int j) const
+inline float DuneSediment::Bedrock(int i, int j) const
 {
 	return bedrock.Get(i, j);
 }
@@ -92,7 +109,7 @@ inline double DuneSediment::Bedrock(int i, int j) const
 /*!
 \brief
 */
-inline double DuneSediment::Sediment(int i, int j) const
+inline float DuneSediment::Sediment(int i, int j) const
 {
 	return sediments.Get(i, j);
 }
@@ -100,7 +117,7 @@ inline double DuneSediment::Sediment(int i, int j) const
 /*!
 \brief
 */
-inline double DuneSediment::Vegetation(int i, int j) const
+inline float DuneSediment::Vegetation(int i, int j) const
 {
 	return vegetation.Get(i, j);
 }

@@ -11,7 +11,7 @@ DuneSediment::DuneSediment()
 	sediments = ScalarField2D(nx, ny, box, 0.0);
 }
 
-DuneSediment::DuneSediment(const Box2D& bbox, double rMin, double rMax)
+DuneSediment::DuneSediment(const Box2D& bbox, float rMin, float rMax)
 {
 	box = bbox;
 	nx = ny = 256;

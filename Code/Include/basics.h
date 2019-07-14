@@ -267,6 +267,7 @@ public:
 	bool Intersect(const Box2D& box) const;
 	float Distance(const Vector2& p) const;
 
+	Vector2 Size() const;
 	Vector2 Vertex(int i) const;
 	Vector2 Center() const;
 	Vector2 BottomLeft() const;
@@ -392,6 +393,14 @@ inline Vector2 Box2D::BottomLeft() const
 inline Vector2 Box2D::TopRight() const
 {
 	return b;
+}
+
+/*!
+\brief Compute the size of the box.
+*/
+inline Vector2 Box2D::Size() const
+{
+	return b - a;
 }
 
 /*
@@ -685,7 +694,7 @@ public:
 	}
 
 	/*
-	\brief Compute a vertex world position including his height.
+	\brief Compute a vertex world position in 3D, with the scalar value treated as height.
 	*/
 	inline Vector3 Vertex(int i, int j) const
 	{
@@ -693,6 +702,16 @@ public:
 		float y = Get(i, j);
 		float z = box.Vertex(0).y + j * (box.Vertex(1).y - box.Vertex(0).y) / (ny - 1);
 		return Vector3(z, y, x);
+	}
+
+	/*!
+	\brief Compute a vertex world position including in 2D.
+	*/
+	inline Vector2 ArrayVertex(int i, int j) const
+	{
+		float x = box.Vertex(0).x + i * (box.Vertex(1).x - box.Vertex(0).x) / (nx - 1);
+		float z = box.Vertex(0).y + j * (box.Vertex(1).y - box.Vertex(0).y) / (ny - 1);
+		return Vector2(z, x);
 	}
 
 	/*
@@ -803,6 +822,27 @@ public:
 	}
 
 	/*!
+	\brief Todo
+	*/
+	inline void CellInteger(const Vector2& p, int& i, int& j) const
+	{
+		Vector2 q = p - box.BottomLeft();
+		Vector2 d = box.Size();
+
+		float u = q[0] / d[0];
+		float v = q[1] / d[1];
+
+		// Scale
+		u *= (nx - 1);
+		v *= (ny - 1);
+
+		// Integer coordinates
+		i = int(u);
+		j = int(v);
+	}
+
+
+	/*!
 	\brief Returns the value of the field at a given coordinate.
 	*/
 	inline float Get(int row, int column) const
@@ -906,6 +946,15 @@ public:
 	inline void Fill(float v)
 	{
 		std::fill(values.begin(), values.end(), v);
+	}
+
+	/*!
+	\brief Return the data in the field.
+	\param c Index.
+	*/
+	inline float& operator[](int c)
+	{
+		return values[c];
 	}
 
 	/*!
