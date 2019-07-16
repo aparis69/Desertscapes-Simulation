@@ -9,6 +9,9 @@
       <UniqueIdentifier>{93995380-89BD-4b04-88EB-625FBE52EBFB}</UniqueIdentifier>
       <Extensions>h;hh;hpp;hxx;hm;inl;inc;ipp;xsd</Extensions>
     </Filter>
+    <Filter Include="Source Files\WTree">
+      <UniqueIdentifier>{1c272cd6-3753-4b3c-a35e-cdb383544120}</UniqueIdentifier>
+    </Filter>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="..\Code\Include\basics.h">
@@ -24,6 +27,9 @@
       <Filter>Header Files</Filter>
     </ClInclude>
     <ClInclude Include="..\Code\Include\desert.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="..\Code\Include\wtree.h">
       <Filter>Header Files</Filter>
     </ClInclude>
   </ItemGroup>
@@ -42,6 +48,21 @@
     </ClCompile>
     <ClCompile Include="..\Code\Source\desert.cpp">
       <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="..\Code\Source\wtree.cpp">
+      <Filter>Source Files\WTree</Filter>
+    </ClCompile>
+    <ClCompile Include="..\Code\Source\wnode.cpp">
+      <Filter>Source Files\WTree</Filter>
+    </ClCompile>
+    <ClCompile Include="..\Code\Source\wunidirectionnal.cpp">
+      <Filter>Source Files\WTree</Filter>
+    </ClCompile>
+    <ClCompile Include="..\Code\Source\wvortex.cpp">
+      <Filter>Source Files\WTree</Filter>
+    </ClCompile>
+    <ClCompile Include="..\Code\Source\wblend.cpp">
+      <Filter>Source Files\WTree</Filter>
     </ClCompile>
   </ItemGroup>
 </Project>

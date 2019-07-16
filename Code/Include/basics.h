@@ -259,6 +259,7 @@ protected:
 
 public:
 	explicit Box2D();
+	explicit Box2D(const Box2D& b1, const Box2D& b2);
 	explicit Box2D(const Vector2& A, const Vector2& B);
 	explicit Box2D(const Vector2& C, float R);
 	explicit Box2D(const Box& b);
@@ -266,7 +267,7 @@ public:
 	bool Contains(const Vector2&) const;
 	bool Intersect(const Box2D& box) const;
 	float Distance(const Vector2& p) const;
-
+	float Width() const;
 	Vector2 Size() const;
 	Vector2 Vertex(int i) const;
 	Vector2 Center() const;
@@ -284,6 +285,17 @@ inline Box2D::Box2D()
 {
 	a = Vector2(0);
 	b = Vector2(0);
+}
+
+/*!
+\brief Construct the box embedding the two box passed by parameter.
+\param b1 first box
+\param b2 second box
+*/
+inline Box2D::Box2D(const Box2D& b1, const Box2D& b2)
+{
+	a = Vector2::Min(b1.a, b2.a);
+	b = Vector2::Max(b1.b, b2.b);
 }
 
 /*
@@ -403,6 +415,15 @@ inline Vector2 Box2D::Size() const
 	return b - a;
 }
 
+/*!
+\brief Compute the width of a box.
+\sa Box2D::Size()
+*/
+inline float Box2D::Width() const
+{
+	return b[0] - a[0];
+}
+
 /*
 \brief Transform a Box2 in a Box.
 \param yMin altitude of the first vertex for the new Box
@@ -472,7 +493,7 @@ inline Vector2 Circle2::RandomOn() const
 
 	float rx = (u * u - v * v) / s;
 	float ry = 2.0f * u * v / s;
-	return center + Vector2(rx, ry) * radius;
+	return center + radius * Vector2(rx, ry);
 }
 
 /*!

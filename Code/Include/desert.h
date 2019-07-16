@@ -21,8 +21,8 @@ protected:
 
 	Box2D box;						//!< World space bounding box.
 	int nx, ny;						//!< Grid resolution.
-	float matterToMove;			//!< Amount of sand transported by the wind, in meter.
-	float cellSize;				//!< Size of one cell in meter, squared. Stored to speed up the simulation.
+	float matterToMove;				//!< Amount of sand transported by the wind, in meter.
+	float cellSize;					//!< Size of one cell in meter, squared. Stored to speed up the simulation.
 
 public:
 	DuneSediment();
