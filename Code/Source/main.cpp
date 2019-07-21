@@ -17,5 +17,6 @@ int main()
 	DuneSediment dune = DuneSediment(Box2D(Vector2(0), Vector2(256)), 1.0, 5.0);
 	for (int i = 0; i < 200; i++)
 		dune.SimulationStepMultiThreadAtomic();
+	dune.ExportObj("transverse.obj");
 	return 0;
 }
