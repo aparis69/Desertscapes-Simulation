@@ -234,7 +234,7 @@ void DuneSediment::ComputeWindAtCell(int i, int j, Vector2& windDir) const
 
 	// Wind velocity is floatd in the best case
 	float t = (similarity + slope) / 2.0f;
-	windDir = Math::Lerp(windDir, windDir * 2.0f, t);
+	windDir = Math::Lerp(windDir, 2.0f * windDir, t);
 
 #ifdef _DEBUG
 	assert(Math::IsNumber(windDir[0]));

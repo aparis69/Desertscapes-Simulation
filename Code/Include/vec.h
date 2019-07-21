@@ -74,7 +74,12 @@ namespace Math
 	template<typename T>
 	inline T Lerp(T a, T b, float t)
 	{
-		return (a * (1.0f - t)) + (b * t);
+		return ((1.0f - t) * a) + (t * b);
+	}
+
+	inline float Sqr(float x)
+	{
+		return x * x;
 	}
 
 	inline float Abs(float a)
@@ -425,6 +430,8 @@ public:
 		return y;
 	}
 	friend std::ostream& operator<< (std::ostream& stream, const Vector2& u);
+	friend Vector2 operator* (float a, const Vector2&);
+	friend Vector2 operator* (const Vector2& u, float a);
 	inline Vector3 ToVector3(float z) const
 	{
 		return Vector3(x, z, y);
@@ -437,6 +444,8 @@ public:
 	{
 		return Math::Min(x, y);
 	}
+	static Vector2 Min(const Vector2& a, const Vector2& b);
+	static Vector2 Max(const Vector2& a, const Vector2& b);
 };
 inline std::ostream& operator<<(std::ostream& stream, const Vector2& u)
 {
@@ -459,7 +468,7 @@ inline float SquaredMagnitude(const Vector2& u)
 inline Vector2 Normalize(const Vector2& v)
 {
 	float kk = 1 / Magnitude(v);
-	return v * kk;
+	return kk * v;
 }
 inline Vector2 operator-(const Vector2& v)
 {
@@ -480,4 +489,20 @@ inline bool operator>=(const Vector2& u, const Vector2& v)
 inline bool operator<=(const Vector2& u, const Vector2& v)
 {
 	return (u.x <= v.x) && (u.y <= v.y);
+}
+inline Vector2 operator* (const Vector2& u, float a)
+{
+	return Vector2(u.x * a, u.y * a);
+}
+inline Vector2 operator* (float a, const Vector2& v)
+{
+	return Vector2(v.x * a, v.y * a);
+}
+inline Vector2 Vector2::Min(const Vector2& a, const Vector2& b)
+{
+	return Vector2(a[0] < b[0] ? a[0] : b[0], a[1] < b[1] ? a[1] : b[1]);
+}
+inline Vector2 Vector2::Max(const Vector2& a, const Vector2& b)
+{
+	return Vector2(a[0] > b[0] ? a[0] : b[0], a[1] > b[1] ? a[1] : b[1]);
 }
