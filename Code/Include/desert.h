@@ -35,8 +35,8 @@ public:
 	void SimulationStepSingleThreadAtomic();
 	void SimulationStepMultiThreadAtomic();
 	void EndSimulationStep();
-	void SimulationStepWorldSpace(int id);
-	void PerformReptationOnCell(int i, int j, int bounce, int id);
+	void SimulationStepWorldSpace();
+	void PerformReptationOnCell(int i, int j, int bounce);
 	void ComputeWindAtCell(int i, int j, Vector2& windDir) const;
 	float IsInShadow(int i, int j, const Vector2& wind) const;
 	void SnapWorld(Vector2& p) const;

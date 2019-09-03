@@ -15,8 +15,9 @@ meshes similar to the ones seen in the paper.
 */
 int main()
 {
-	DuneSediment dune = DuneSediment(Box2D(Vector2(0), Vector2(256)), 1.0, 5.0);
+	DuneSediment dune = DuneSediment(Box2D(Vector2(0), Vector2(256)), 1.0, 2.);
 	for (int i = 0; i < 2; i++)
 		dune.SimulationStepMultiThreadAtomic();
+	dune.ExportObj("transverse.obj");
 	return 0;
 }

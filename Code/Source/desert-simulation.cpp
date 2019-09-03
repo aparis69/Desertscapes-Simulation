@@ -20,11 +20,10 @@ static int simulationStepCount = 0;
 */
 void DuneSediment::SimulationStepSingleThreadAtomic()
 {
-	int id = omp_get_thread_num();
 	for (int a = 0; a < nx; a++)
 	{
 		for (int b = 0; b < ny; b++)
-			SimulationStepWorldSpace(id);
+			SimulationStepWorldSpace();
 	}
 	EndSimulationStep();
 }
@@ -36,12 +35,11 @@ void DuneSediment::SimulationStepMultiThreadAtomic()
 {
 #pragma omp parallel num_threads(OMP_NUM_THREAD)
 	{
-		int id = omp_get_thread_num();
 #pragma omp for
 		for (int a = 0; a < nx; a++)
 		{
 			for (int b = 0; b < ny; b++)
-				SimulationStepWorldSpace(id);
+				SimulationStepWorldSpace();
 		}
 	}
 
@@ -73,7 +71,7 @@ void DuneSediment::EndSimulationStep()
 /*!
 \brief Todo
 */
-void DuneSediment::SimulationStepWorldSpace(int id)
+void DuneSediment::SimulationStepWorldSpace()
 {
 	Vector2 windDir;
 
@@ -155,13 +153,13 @@ void DuneSediment::SimulationStepWorldSpace(int id)
 		// Perform reptation at each bounce
 		bounce++;
 		if (Random::Uniform() < 1.0 - vegetation[start1D])
-			PerformReptationOnCell(destI, destJ, bounce, id);
+			PerformReptationOnCell(destI, destJ, bounce);
 	}
 	// End of the deposition loop - we have move matter from (startI, startJ) to (destI, destJ)
 
 	// Perform reptation at the deposition simulationStepCount
 	if (Random::Uniform() < 1.0 - vegetation[start1D])
-		PerformReptationOnCell(destI, destJ, bounce, id);
+		PerformReptationOnCell(destI, destJ, bounce);
 
 	// (4) Check for the angle of repose on the original cell
 	StabilizeSedimentRelative(startI, startJ);
@@ -173,7 +171,7 @@ void DuneSediment::SimulationStepWorldSpace(int id)
 /*!
 \brief Todo
 */
-void DuneSediment::PerformReptationOnCell(int i, int j, int bounce, int id)
+void DuneSediment::PerformReptationOnCell(int i, int j, int bounce)
 {
 	// Compute amount of sand to creep ; function of number of bounce.
 	int b = Math::Clamp(bounce, 0, 3);
