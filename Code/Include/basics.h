@@ -858,8 +858,8 @@ public:
 		v *= (ny - 1);
 
 		// Integer coordinates
-		i = int(u);
-		j = int(v);
+		i = int(v);
+		j = int(u);
 	}
 
 

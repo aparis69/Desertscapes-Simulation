@@ -17,6 +17,8 @@ DuneSediment::DuneSediment()
 	sediments = ScalarField2D(nx, ny, box, 0.0);
 
 	matterToMove = 0.1f;
+	Vector2 celldiagonal = Vector2((box.TopRight()[0] - box.BottomLeft()[0]) / (nx - 1), (box.TopRight()[1] - box.BottomLeft()[1]) / (ny - 1));
+	cellSize = Box2D(box.BottomLeft(), box.BottomLeft() + celldiagonal).Size().x;
 }
 
 /*!
@@ -37,6 +39,9 @@ DuneSediment::DuneSediment(const Box2D& bbox, float rMin, float rMax)
 			sediments.Set(i, j, Random::Uniform(rMin, rMax));
 	}
 
+	Vector2 celldiagonal = Vector2((box.TopRight()[0] - box.BottomLeft()[0]) / (nx - 1), (box.TopRight()[1] - box.BottomLeft()[1]) / (ny - 1));
+	cellSize = Box2D(box.BottomLeft(), box.BottomLeft() + celldiagonal).Size().x;
+	
 	matterToMove = 0.1f;
 }
 
@@ -69,8 +74,8 @@ void DuneSediment::ExportObj(const std::string& url) const
 			normals[id] = Normalize(Vector2(bedrock.Gradient(i, j) + sediments.Gradient(i, j)).ToVector3(-2.0f));
 			vertices[id] = Vector3(
 				box[0][0] + i * (box[1][0] - box[0][0]) / (nx - 1),
-				box[0][1] + j * (box[1][1] - box[0][1]) / (ny - 1),
-				Height(i, j)
+				Height(i, j),
+				box[0][1] + j * (box[1][1] - box[0][1]) / (ny - 1)
 			);
 		}
 	}
@@ -102,7 +107,7 @@ void DuneSediment::ExportObj(const std::string& url) const
 	for (int i = 0; i < vertices.size(); i++)
 		out << "v " << vertices.at(i).x << " " << vertices.at(i).y << " " << vertices.at(i).z << '\n';
 	for (int i = 0; i < normals.size(); i++)
-		out << "vn " << normals.at(i).x << " " << normals.at(i).y << " " << normals.at(i).z << '\n';
+		out << "vn " << normals.at(i).x << " " << normals.at(i).z << " " << normals.at(i).y << '\n';
 	for (int i = 0; i < indices.size(); i += 3)
 	{
 		out << "f " << indices.at(i) + 1 << "//" << indices.at(i) + 1

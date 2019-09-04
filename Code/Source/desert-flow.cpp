@@ -89,13 +89,6 @@ void DuneSediment::StabilizeSedimentRelative(int i, int j)
 	queueToStabilize.push_back(Vector2i(i, j));
 	while (queueToStabilize.empty() == false)
 	{
-		//
-		//
-		//
-		// BUG HERE: infinite looping over the same cells
-		//
-		//
-		//
 		Vector2i current = queueToStabilize[0];
 		queueToStabilize.erase(queueToStabilize.begin());
 		int id = ToIndex1D(current);

@@ -4,7 +4,7 @@
 #include <omp.h>
 
 // File scope variables
-#define OMP_NUM_THREAD 1
+#define OMP_NUM_THREAD 8
 
 static size_t abrasionStepCount = 0;
 static float abrasionEpsilon = 0.5;
