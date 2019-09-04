@@ -1,4 +1,4 @@
-## Desertscapes Simulation
+## Desertscape Simulation
 Source code for some results shown in the paper "Desertscapes Simulation" published in Computer Graphics Forum in 2019. 
 This is aimed at researchers, students or profesionnals who may want to reproduce **some** of the results described in the paper.
 [Click here for more information about the project](https://aparis69.github.io/projects/paris2019_Deserts.html).
@@ -29,3 +29,5 @@ You can use this code in any way you want, however please credit the original ar
 ### Missing
 There is still some things missing from the paper implementation. They might be added in the future if someone is interested. What is not in the code:
 * Interactive tools showcased in the video
+* Complex wind scenario and wind roses
+* Optimization and performance. While multithreaded with OpenMP, this program doesn't include all the optimizations done for the timings shown in the paper.

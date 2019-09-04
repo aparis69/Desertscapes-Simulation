@@ -1,4 +1,4 @@
-solution "ImplicitTerrains"
+solution "Desertscape"
 	configurations { "Debug", "Release" }
 
 	platforms { "x64" }
@@ -24,10 +24,9 @@ solution "ImplicitTerrains"
 		linkoptions { "-flto"}
 		linkoptions { "-g"}
 
-fileList = { rootDir .. "/Code/Source/*.cpp", rootDir .. "/Code/Include/*.h", rootDir .. "/Code/Source/TTree/*.cpp",
-rootDir .. "/Code/Source/MC/*.cpp", rootDir .. "/Code/Source/GeoTree/*.cpp" }
+fileList = { rootDir .. "/Code/Source/*.cpp", rootDir .. "/Code/Include/*.h" }
 
-project("ImplicitTerrains")
+project("Desertscape")
 	language "C++"
 	kind "ConsoleApp"
 	targetdir "Out"
