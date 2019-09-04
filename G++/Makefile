@@ -6,21 +6,18 @@ ifndef config
 endif
 export config
 
-PROJECTS := ImplicitTerrains
+PROJECTS := Desertscape
 
 .PHONY: all clean help $(PROJECTS)
 
 all: $(PROJECTS)
 
-ImplicitTerrains: 
-	@echo "==== Building ImplicitTerrains ($(config)) ===="
-	@${MAKE} --no-print-directory -C . -f ImplicitTerrains.make
-
-run:
-	cd Out/ && ./ImplicitTerrains && cd ../
+Desertscape: 
+	@echo "==== Building Desertscape ($(config)) ===="
+	@${MAKE} --no-print-directory -C . -f Desertscape.make
 
 clean:
-	@${MAKE} --no-print-directory -C . -f ImplicitTerrains.make clean
+	@${MAKE} --no-print-directory -C . -f Desertscape.make clean
 
 help:
 	@echo "Usage: make [config=name] [target]"
@@ -32,6 +29,6 @@ help:
 	@echo "TARGETS:"
 	@echo "   all (default)"
 	@echo "   clean"
-	@echo "   ImplicitTerrains"
+	@echo "   Desertscape"
 	@echo ""
 	@echo "For more information, see http://industriousone.com/premake/quick-start"

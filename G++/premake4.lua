@@ -21,6 +21,7 @@ solution "Desertscape"
 		buildoptions { "-std=c++14" }
 		buildoptions { "-w" }
 		buildoptions { "-flto -g"}
+		linkoptions { "-fopenmp" }
 		linkoptions { "-flto"}
 		linkoptions { "-g"}
 
