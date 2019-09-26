@@ -1,6 +1,6 @@
 ## Desertscape Simulation
-Source code for some results shown in the paper "Desertscapes Simulation" published in Computer Graphics Forum in 2019. 
-This is aimed at researchers, students or profesionnals who may want to reproduce **some** of the results described in the paper.
+Source code for some results shown in the paper "Desertscapes Simulation" published in Computer Graphics Forum in 2019
+and presented at Pacific Graphics 2019. This is aimed at researchers, students or profesionnals who may want to reproduce **some** of the results described in the paper.
 [Click here for more information about the project](https://aparis69.github.io/projects/paris2019_Deserts.html).
 
 ### Important notes
