@@ -10,6 +10,7 @@ DuneSediment::DuneSediment()
 {
 	nx = ny = 256;
 	box = Box2D(Vector2(0), 1);
+	wind = Vector2(1, 0);
 
 	bedrock = ScalarField2D(nx, ny, box, 0.0);
 	bedrockWeakness = ScalarField2D(nx, ny, box, 0.0);
@@ -24,10 +25,11 @@ DuneSediment::DuneSediment()
 /*!
 \brief Todo
 */
-DuneSediment::DuneSediment(const Box2D& bbox, float rMin, float rMax)
+DuneSediment::DuneSediment(const Box2D& bbox, float rMin, float rMax, const Vector2& w)
 {
 	box = bbox;
 	nx = ny = 256;
+	wind = w;
 
 	bedrock = ScalarField2D(nx, ny, box, 0.0);
 	bedrockWeakness = ScalarField2D(nx, ny, box, 0.0);

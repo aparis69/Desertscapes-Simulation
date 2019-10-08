@@ -7,7 +7,6 @@
 struct Vector2i;
 struct Vector2;
 struct Vector3;
-struct Vector4;
 
 // Maths utility
 namespace Math

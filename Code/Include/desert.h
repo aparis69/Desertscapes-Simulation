@@ -23,16 +23,16 @@ protected:
 	int nx, ny;						//!< Grid resolution.
 	float matterToMove;				//!< Amount of sand transported by the wind, in meter.
 	float cellSize;					//!< Size of one cell in meter, squared. Stored to speed up the simulation.
+	Vector2 wind;					//!< Base wind direction.
 
 public:
 	DuneSediment();
-	DuneSediment(const Box2D& bbox, float rMin, float rMax);
+	DuneSediment(const Box2D& bbox, float rMin, float rMax, const Vector2& w);
 	~DuneSediment();
 
 	// Simulation
 	int ToIndex1D(const Vector2i& q) const;
 	int ToIndex1D(int i, int j) const;
-	void SimulationStepSingleThreadAtomic();
 	void SimulationStepMultiThreadAtomic();
 	void EndSimulationStep();
 	void SimulationStepWorldSpace();

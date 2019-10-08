@@ -6,26 +6,11 @@
 // File scope variables
 #define OMP_NUM_THREAD 8
 
-static size_t abrasionStepCount = 0;
 static float abrasionEpsilon = 0.5;
 static Vector2i next8[8] = { Vector2i(1, 0), Vector2i(1, 1), Vector2i(0, 1), Vector2i(-1, 1), Vector2i(-1, 0), Vector2i(-1, -1), Vector2i(0, -1), Vector2i(1, -1) };
 static Vector2i Next(int i, int j, int k)
 {
 	return Vector2i(i, j) + next8[k];
-}
-static int simulationStepCount = 0;
-
-/*!
-\brief Performs a multi-threaded simulation simulationStepCount.
-*/
-void DuneSediment::SimulationStepSingleThreadAtomic()
-{
-	for (int a = 0; a < nx; a++)
-	{
-		for (int b = 0; b < ny; b++)
-			SimulationStepWorldSpace();
-	}
-	EndSimulationStep();
 }
 
 /*!
@@ -42,7 +27,6 @@ void DuneSediment::SimulationStepMultiThreadAtomic()
 				SimulationStepWorldSpace();
 		}
 	}
-
 	EndSimulationStep();
 }
 
@@ -52,19 +36,15 @@ to save computation time.
 */
 void DuneSediment::EndSimulationStep()
 {
+	static int simulationStepCount = 0;
+
 #pragma omp atomic
 	simulationStepCount++;
 
-	int mod = simulationStepCount % 5;
-	if (mod == 0)
+	if (simulationStepCount % 5 == 0)
 	{
-		// Bedrock stabilization
-		if (abrasionOn)
+		if (abrasionOn) // Bedrock stabilization
 			StabilizeBedrockAll();
-
-		// Update terrain data
-		//wtree->SetTerrainData(ScalarField2(GetHeightField()));
-		//wtree->SetTerrainData(bedrock);
 	}
 }
 
@@ -173,7 +153,7 @@ void DuneSediment::SimulationStepWorldSpace()
 */
 void DuneSediment::PerformReptationOnCell(int i, int j, int bounce)
 {
-	// Compute amount of sand to creep ; function of number of bounce.
+	// Compute amount of sand to creep; function of number of bounce.
 	int b = Math::Clamp(bounce, 0, 3);
 	float t = float(b) / 3.0f;
 	float se = Math::Lerp(matterToMove / 2.0f, matterToMove, t);
@@ -216,13 +196,8 @@ void DuneSediment::PerformReptationOnCell(int i, int j, int bounce)
 */
 void DuneSediment::ComputeWindAtCell(int i, int j, Vector2& windDir) const
 {
-#ifdef _DEBUG
-	assert(Math::IsNumber(i));
-	assert(Math::IsNumber(j));
-#endif
-
-	// Compute the base wind vector at this position
-	windDir = Vector2(3, 0); // wtree->Direction(bedrock.ArrayVertex(i, j));
+	// Base wind direction
+	windDir = wind;
 
 	// Modulate wind strength with sediment layer: increase -velocity on slope in the direction of the wind
 	Vector2 g = sediments.Gradient(i, j);
@@ -234,14 +209,9 @@ void DuneSediment::ComputeWindAtCell(int i, int j, Vector2& windDir) const
 		slope = Math::Clamp(Magnitude(g));
 	}
 
-	// Wind velocity is floatd in the best case
+	// Wind velocity is doubled in the best case
 	float t = (similarity + slope) / 2.0f;
 	windDir = Math::Lerp(windDir, 2.0f * windDir, t);
-
-#ifdef _DEBUG
-	assert(Math::IsNumber(windDir[0]));
-	assert(Math::IsNumber(windDir[1]));
-#endif
 }
 
 /*!
@@ -267,9 +237,6 @@ void DuneSediment::PerformAbrasionOnCell(int i, int j, const Vector2& windDir)
 	// Transform bedrock into dust (nothing)
 #pragma omp atomic
 	bedrock[id] -= si;
-
-#pragma omp atomic
-	abrasionStepCount++;
 }
 
 /*!
@@ -321,13 +288,8 @@ void DuneSediment::SnapWorld(Vector2& p) const
 		p[0] = box.Size()[0] + p[0];
 	else if (p[0] >= box.Size()[0])
 		p[0] = p[0] - box.Size()[0];
-
 	if (p[1] < 0)
 		p[1] = box.Size()[1] + p[1];
 	else if (p[1] >= box.Size()[1])
 		p[1] = p[1] - box.Size()[1];
-
-#ifdef _DEBUG
-	assert(bedrock.Inside(p));
-#endif
 }
