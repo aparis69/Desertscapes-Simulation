@@ -1,4 +1,5 @@
 #include "desert.h"
+#include "noise.h"
 
 #include <iostream>
 #include <fstream>
@@ -13,13 +14,12 @@ DuneSediment::DuneSediment()
 	wind = Vector2(1, 0);
 
 	bedrock = ScalarField2D(nx, ny, box, 0.0);
-	bedrockWeakness = ScalarField2D(nx, ny, box, 0.0);
 	vegetation = ScalarField2D(nx, ny, box, 0.0);
 	sediments = ScalarField2D(nx, ny, box, 0.0);
 
 	matterToMove = 0.1f;
 	Vector2 celldiagonal = Vector2((box.TopRight()[0] - box.BottomLeft()[0]) / (nx - 1), (box.TopRight()[1] - box.BottomLeft()[1]) / (ny - 1));
-	cellSize = Box2D(box.BottomLeft(), box.BottomLeft() + celldiagonal).Size().x;
+	cellSize = Box2D(box.BottomLeft(), box.BottomLeft() + celldiagonal).Size().x; // We only consider squared heightfields
 }
 
 /*!
@@ -32,17 +32,22 @@ DuneSediment::DuneSediment(const Box2D& bbox, float rMin, float rMax, const Vect
 	wind = w;
 
 	bedrock = ScalarField2D(nx, ny, box, 0.0);
-	bedrockWeakness = ScalarField2D(nx, ny, box, 0.0);
 	vegetation = ScalarField2D(nx, ny, box, 0.0);
 	sediments = ScalarField2D(nx, ny, box, 0.0);
 	for (int i = 0; i < nx; i++)
 	{
 		for (int j = 0; j < ny; j++)
+		{
+			Vector2 p = bedrock.ArrayVertex(i, j);
+			float v = PerlinNoise::fBm(Vector3(p.x, p.y, 0.0f), 1.0, 0.06, 3);
+			if (v > 0.8)
+				vegetation.Set(i, j, 1.0);
 			sediments.Set(i, j, Random::Uniform(rMin, rMax));
+		}
 	}
 
 	Vector2 celldiagonal = Vector2((box.TopRight()[0] - box.BottomLeft()[0]) / (nx - 1), (box.TopRight()[1] - box.BottomLeft()[1]) / (ny - 1));
-	cellSize = Box2D(box.BottomLeft(), box.BottomLeft() + celldiagonal).Size().x;
+	cellSize = Box2D(box.BottomLeft(), box.BottomLeft() + celldiagonal).Size().x; // We only consider squared heightfields
 	
 	matterToMove = 0.1f;
 }
@@ -73,7 +78,7 @@ void DuneSediment::ExportObj(const std::string& url) const
 		for (int j = 0; j < ny; j++)
 		{
 			int id = ToIndex1D(i, j);
-			normals[id] = Normalize(Vector2(bedrock.Gradient(i, j) + sediments.Gradient(i, j)).ToVector3(-2.0f));
+			normals[id] = -Normalize(Vector2(bedrock.Gradient(i, j) + sediments.Gradient(i, j)).ToVector3(-2.0f));
 			vertices[id] = Vector3(
 				box[0][0] + i * (box[1][0] - box[0][0]) / (nx - 1),
 				Height(i, j),

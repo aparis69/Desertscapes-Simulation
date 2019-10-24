@@ -618,7 +618,7 @@ public:
 	*/
 	inline ScalarField2D(int nx, int ny, const Box2D& bbox) : box(bbox), nx(nx), ny(ny)
 	{
-		values.resize(nx * ny);
+		values.resize(size_t(nx * ny));
 	}
 
 	/*
@@ -630,7 +630,7 @@ public:
 	*/
 	inline ScalarField2D(int nx, int ny, const Box2D& bbox, float value) : box(bbox), nx(nx), ny(ny)
 	{
-		values.resize(nx * ny);
+		values.resize(size_t(nx * ny));
 		Fill(value);
 	}
 
@@ -861,7 +861,6 @@ public:
 		i = int(v);
 		j = int(u);
 	}
-
 
 	/*!
 	\brief Returns the value of the field at a given coordinate.

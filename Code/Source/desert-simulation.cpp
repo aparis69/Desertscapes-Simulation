@@ -1,6 +1,6 @@
 #include "desert.h"
+#include "noise.h"
 
-#include <assert.h>
 #include <omp.h>
 
 // File scope variables
@@ -224,17 +224,22 @@ void DuneSediment::PerformAbrasionOnCell(int i, int j, const Vector2& windDir)
 	// Vegetation protects from abrasion
 	float v = vegetation.Get(id);
 
-	// Bedrock resistance (1.0 equals to weak, 0.0 equals to hard)
-	float h = bedrockWeakness.Get(id);
+	// Bedrock resistance [0, 1] (1.0 equals to weak, 0.0 equals to hard)
+	// Here with a simple sin() function, but anything could be used: texture, noise, construction tree...
+	const Vector2 p = bedrock.ArrayVertex(i, j);
+	const float freq = 0.08f;
+	const float warp = 15.36f;
+	float h = (sinf((p.y * freq) + (warp * PerlinNoise::GetValue(0.05f * p))) + 1.0f) / 2.0f;
 
 	// Wind strength
 	float w = Math::Clamp(Magnitude(windDir), 0.0f, 2.0f);
 
+	// Abrasion strength, function of vegetation, hardness and wind speed.
 	float si = abrasionEpsilon * (1.0f - v) * (1.0f - h) * w;
 	if (si == 0.0)
 		return;
 
-	// Transform bedrock into dust (nothing)
+	// Transform bedrock into dust
 #pragma omp atomic
 	bedrock[id] -= si;
 }

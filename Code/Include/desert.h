@@ -16,8 +16,7 @@ private:
 protected:
 	ScalarField2D bedrock;			//!< Bedrock elevation layer, in meter.
 	ScalarField2D sediments;		//!< Sediment elevation layer, in meter.
-	ScalarField2D bedrockWeakness;	//!< Bedrock weakness layer between [0, 1].
-	ScalarField2D vegetation;		//!< Vegetation presence map between [0, 1].
+	ScalarField2D vegetation;		//!< Vegetation presence in [0, 1].
 
 	Box2D box;						//!< World space bounding box.
 	int nx, ny;						//!< Grid resolution.
@@ -55,11 +54,8 @@ public:
 	float Height(const Vector2& p) const;
 	float Bedrock(int i, int j) const;
 	float Sediment(int i, int j) const;
-	float Vegetation(int i, int j) const;
 	void SetAbrasionMode(bool c);
 	void SetVegetationMode(bool c);
-	void SetHardnessData(const ScalarField2D& f);
-	void SetVegetationData(const ScalarField2D& f);
 	void SetBedrockData(const ScalarField2D& f);
 	void SetSedimentData(const ScalarField2D& f);
 };
@@ -117,14 +113,6 @@ inline float DuneSediment::Sediment(int i, int j) const
 /*!
 \brief
 */
-inline float DuneSediment::Vegetation(int i, int j) const
-{
-	return vegetation.Get(i, j);
-}
-
-/*!
-\brief
-*/
 inline void DuneSediment::SetAbrasionMode(bool c)
 {
 	abrasionOn = c;
@@ -136,22 +124,6 @@ inline void DuneSediment::SetAbrasionMode(bool c)
 inline void DuneSediment::SetVegetationMode(bool c)
 {
 	vegetationOn = c;
-}
-
-/*!
-\brief
-*/
-inline void DuneSediment::SetHardnessData(const ScalarField2D& f)
-{
-	bedrockWeakness = f;
-}
-
-/*!
-\brief
-*/
-inline void DuneSediment::SetVegetationData(const ScalarField2D& f)
-{
-	vegetation = f;
 }
 
 /*!
