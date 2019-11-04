@@ -22,8 +22,8 @@ You can use this code in any way you want, however please credit the original ar
               Adrien and Guérin, Eric and Argudo, Oscar},
     title = {Desertscapes Simulation},
     journal = {Computer Graphics Forum},
-    volume = {??},
-    number = {?},
+    volume = {38},
+    number = {7},
     year = {2019},
   }
 ```	
