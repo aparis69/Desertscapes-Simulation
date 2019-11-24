@@ -39,12 +39,37 @@ DuneSediment::DuneSediment(const Box2D& bbox, float rMin, float rMax, const Vect
 		for (int j = 0; j < ny; j++)
 		{
 			Vector2 p = bedrock.ArrayVertex(i, j);
-			float v = PerlinNoise::fBm(Vector3(p.x, p.y, 0.0f), 1.0, 0.06, 3);
-			if (v > 0.8)
-				vegetation.Set(i, j, 1.0);
+
+			// Vegetation
+			// Arbitrary clamped 2D noise - but you can use whatever you want.
+			float v = PerlinNoise::fBm(Vector3(i * 7.91247f, j * 7.91247f, 0.0f), 1.0f, 0.002f, 3) / 1.75f;
+			if (v > 0.58f)
+				vegetation.Set(i, j, v);
+
+			// Sand
 			sediments.Set(i, j, Random::Uniform(rMin, rMax));
 		}
 	}
+
+	// Debug code to write a ppm file showing the vegetation.
+	// @Todo: could be refactored in the scalarfield2 class.
+	//int i, j;
+	//FILE* fp;
+	//fopen_s(&fp, "first.ppm", "wb"); /* b - binary mode */
+	//(void)fprintf(fp, "P6\n%d %d\n255\n", nx, ny);
+	//for (j = 0; j < nx; ++j)
+	//{
+	//	for (i = 0; i < ny; ++i)
+	//	{
+	//		static unsigned char color[3];
+	//		int v = (int)(vegetation.Get(i, j) * 256);
+	//		color[0] = v % 256;  /* red */
+	//		color[1] = v % 256;  /* green */
+	//		color[2] = v % 256;  /* blue */
+	//		(void)fwrite(color, 1, 3, fp);
+	//	}
+	//}
+	//(void)fclose(fp);
 
 	Vector2 celldiagonal = Vector2((box.TopRight()[0] - box.BottomLeft()[0]) / (nx - 1), (box.TopRight()[1] - box.BottomLeft()[1]) / (ny - 1));
 	cellSize = Box2D(box.BottomLeft(), box.BottomLeft() + celldiagonal).Size().x; // We only consider squared heightfields
