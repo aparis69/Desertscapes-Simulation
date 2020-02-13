@@ -4,7 +4,7 @@ and presented at Pacific Graphics 2019. This is aimed at researchers, students o
 [Click here for more information about the project](https://aparis69.github.io/public_html/projects/paris2019_Deserts.html).
 
 ### Important notes
-* This code is **not** the one which produced the scenes seen in the paper. Everything has been *recoded* on my side to make sure it is free to use. 
+* This code is **not** the one which produced the scenes seen in the paper. Everything has been *recoded* on my side to make sure it is free to use. The original code from the paper is dependent on internal libraries of my team.
 Hence, the results as well as the timings may differ from the ones in the paper.
 * This is **research** code provided without any warranty. However, if you have any problem you can still send me an email or create an issue.
 
