@@ -1,4 +1,9 @@
 ## Desertscape Simulation
+
+<img src="https://aparis69.github.io/public_html/imgs/deserts_representative.jpg"
+     alt="Deserts - representative image"
+     style="float: left; margin: 5px;" />
+
 Source code for some results shown in the paper "Desertscapes Simulation" published in Computer Graphics Forum in 2019
 and presented at Pacific Graphics 2019. This is aimed at researchers, students or profesionnals who may want to reproduce **some** of the results described in the paper.
 [Click here for more information about the project](https://aparis69.github.io/public_html/projects/paris2019_Deserts.html).
