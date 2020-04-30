@@ -1,6 +1,6 @@
 #pragma once
 
-#include <math.h>
+#include <cmath>
 #include <iostream>
 
 /* Forward Declarations */
@@ -44,7 +44,6 @@ namespace Math
 
 	/*!
 	\brief Check if a real number is not NaN.
-
 	The code is simply:
 	\code
 	return (x == x);
@@ -317,12 +316,11 @@ inline float Magnitude(const Vector3& u)
 }
 inline float SquaredMagnitude(const Vector3& u)
 {
-	float m = Magnitude(u);
-	return m * m;
+	return u.x * u.x + u.y * u.y + u.z * u.z;
 }
 inline Vector3 Normalize(const Vector3& v)
 {
-	float kk = 1 / Magnitude(v);
+	float kk = 1.0f / Magnitude(v);
 	return v * kk;
 }
 inline Vector3 operator-(const Vector3& v)
@@ -461,12 +459,11 @@ inline float Magnitude(const Vector2& u)
 }
 inline float SquaredMagnitude(const Vector2& u)
 {
-	float m = Magnitude(u);
-	return m * m;
+	return u.x * u.x + u.y * u.y;
 }
 inline Vector2 Normalize(const Vector2& v)
 {
-	float kk = 1 / Magnitude(v);
+	float kk = 1.0f / Magnitude(v);
 	return kk * v;
 }
 inline Vector2 operator-(const Vector2& v)

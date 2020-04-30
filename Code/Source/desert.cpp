@@ -73,7 +73,7 @@ DuneSediment::DuneSediment(const Box2D& bbox, float rMin, float rMax, const Vect
 
 	Vector2 celldiagonal = Vector2((box.TopRight()[0] - box.BottomLeft()[0]) / (nx - 1), (box.TopRight()[1] - box.BottomLeft()[1]) / (ny - 1));
 	cellSize = Box2D(box.BottomLeft(), box.BottomLeft() + celldiagonal).Size().x; // We only consider squared heightfields
-	
+
 	matterToMove = 0.1f;
 }
 
@@ -131,7 +131,7 @@ void DuneSediment::ExportObj(const std::string& url) const
 	}
 
 	// Export as .obj file
-	std::ofstream out;	
+	std::ofstream out;
 	out.open(url);
 	if (out.is_open() == false)
 		return;
@@ -148,4 +148,51 @@ void DuneSediment::ExportObj(const std::string& url) const
 			<< '\n';
 	}
 	out.close();
+}
+
+/*!
+\brief Todo
+*/
+void DuneSediment::ExportObj(std::vector<Vector3>& vertices, std::vector<Vector3>& normals, std::vector<Vector3>& colors, std::vector<int>& indices) const
+{
+	// Vertices & UVs & Normals
+	normals.resize(nx * ny, Vector3(0));
+	vertices.resize(nx * ny, Vector3(0));
+	colors.resize(nx * ny, Vector3(0));
+	for (int i = 0; i < nx; i++)
+	{
+		for (int j = 0; j < ny; j++)
+		{
+			int id = ToIndex1D(i, j);
+			normals[id] = -Normalize(Vector2(bedrock.Gradient(i, j) + sediments.Gradient(i, j)).ToVector3(-2.0f));
+			vertices[id] = Vector3(
+				box[0][0] + i * (box[1][0] - box[0][0]) / (nx - 1),
+				Height(i, j),
+				box[0][1] + j * (box[1][1] - box[0][1]) / (ny - 1)
+			);
+
+			if (sediments.Get(id) < 0.25)
+				colors[id] = Vector3(0.5, 0.5, 0.5);
+			else
+				colors[id] = Vector3(240 / 255.0f, 200 / 255.0f, 141 / 255.0f);
+		}
+	}
+
+	// Triangles
+	int c = 0;
+	int vertexArrayLength = ny * nx;
+	while (c < vertexArrayLength - nx - 1)
+	{
+		if (c == 0 || (((c + 1) % nx != 0) && c <= vertexArrayLength - nx))
+		{
+			indices.push_back(c + nx + 1);
+			indices.push_back(c + nx);
+			indices.push_back(c);
+
+			indices.push_back(c);
+			indices.push_back(c + 1);
+			indices.push_back(c + nx + 1);
+		}
+		c++;
+	}
 }

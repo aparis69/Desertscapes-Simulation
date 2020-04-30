@@ -48,6 +48,7 @@ public:
 
 	// Exports & Meshing
 	void ExportObj(const std::string& file) const;
+	void ExportObj(std::vector<Vector3>& vertex, std::vector<Vector3>& normals, std::vector<Vector3>& colors, std::vector<int>& indices) const;
 
 	// Inlined functions and query
 	float Height(int i, int j) const;

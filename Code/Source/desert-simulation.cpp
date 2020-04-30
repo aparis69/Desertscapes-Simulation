@@ -14,7 +14,7 @@ static Vector2i Next(int i, int j, int k)
 }
 
 /*!
-\brief Todo
+\brief
 */
 void DuneSediment::SimulationStepMultiThreadAtomic()
 {
@@ -32,7 +32,7 @@ void DuneSediment::SimulationStepMultiThreadAtomic()
 
 /*!
 \brief Some operations are performed every five iteration
-to save computation time.
+to improve computation time.
 */
 void DuneSediment::EndSimulationStep()
 {
@@ -43,13 +43,17 @@ void DuneSediment::EndSimulationStep()
 
 	if (simulationStepCount % 5 == 0)
 	{
-		if (abrasionOn) // Bedrock stabilization
+		// Bedrock stabilization is required if abrasion is turned on
+		// To avoid unrealistic bedrock shapes. However, the repose angle of the material
+		// Can be changed (we use 68 degrees, see desert.h static variables).
+		if (abrasionOn)
 			StabilizeBedrockAll();
 	}
 }
 
 /*!
-\brief Todo
+\brief Main simulation entry point. This function performs
+a single simulation step at a random cell in the terrain.
 */
 void DuneSediment::SimulationStepWorldSpace()
 {
@@ -149,7 +153,10 @@ void DuneSediment::SimulationStepWorldSpace()
 }
 
 /*!
-\brief Todo
+\brief Performs the reptation process as described in the paper.
+Although some observations have been made in geomorphology about the impact
+of reptation, we didn't find any particular change with or without reptation activated.
+Still, implementation is provided if someone wants to try it.
 */
 void DuneSediment::PerformReptationOnCell(int i, int j, int bounce)
 {
@@ -171,6 +178,7 @@ void DuneSediment::PerformReptationOnCell(int i, int j, int bounce)
 		float sei = se / n;
 
 		// We don't perform reptation if the grid discretization is too low.
+		// (If cells are too far away from each other in world space)
 		Vector2 pk = bedrock.ArrayVertex(next.x, next.y);
 		if (SquaredMagnitude(p - pk) > rReptationSquared)
 			continue;
@@ -192,14 +200,14 @@ void DuneSediment::PerformReptationOnCell(int i, int j, int bounce)
 }
 
 /*!
-\brief
+\brief Compute the wind direction at a given cell.
 */
 void DuneSediment::ComputeWindAtCell(int i, int j, Vector2& windDir) const
 {
 	// Base wind direction
 	windDir = wind;
 
-	// Modulate wind strength with sediment layer: increase -velocity on slope in the direction of the wind
+	// Modulate wind strength with sediment layer: increase velocity on slope in the direction of the wind
 	Vector2 g = sediments.Gradient(i, j);
 	float similarity = 0.0f;
 	float slope = 0.0f;
@@ -215,7 +223,11 @@ void DuneSediment::ComputeWindAtCell(int i, int j, Vector2& windDir) const
 }
 
 /*!
-\brief Todo
+\brief This functions performs the abrasion algorithm described in the paper,
+which is responsible for the creation of yardang features.
+\param i cell i
+\param j cell j
+\param windDir wind direction at this cell
 */
 void DuneSediment::PerformAbrasionOnCell(int i, int j, const Vector2& windDir)
 {
@@ -225,7 +237,10 @@ void DuneSediment::PerformAbrasionOnCell(int i, int j, const Vector2& windDir)
 	float v = vegetation.Get(id);
 
 	// Bedrock resistance [0, 1] (1.0 equals to weak, 0.0 equals to hard)
-	// Here with a simple sin() function, but anything could be used: texture, noise, construction tree...
+	// Here with a simple sin() function, but anything could be used: texture, noise, construction trees...
+	// In the paper, we used various noises octaves combined with each other.
+	// Note: To get a more interesting look on the yardangs, turbulent wind is required. It is not provided
+	// In this implementation.
 	const Vector2 p = bedrock.ArrayVertex(i, j);
 	const float freq = 0.08f;
 	const float warp = 15.36f;
@@ -285,7 +300,7 @@ float DuneSediment::IsInShadow(int i, int j, const Vector2& windDir) const
 }
 
 /*!
-\brief Todo
+\brief Snaps the coordinates of a given point to stay within terrain boundaries.
 */
 void DuneSediment::SnapWorld(Vector2& p) const
 {
