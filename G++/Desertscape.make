@@ -67,13 +67,7 @@ OBJECTS := \
 	$(OBJDIR)/desert-flow.o \
 	$(OBJDIR)/desert-simulation.o \
 	$(OBJDIR)/desert.o \
-	$(OBJDIR)/heightfield.o \
 	$(OBJDIR)/main.o \
-	$(OBJDIR)/wblend.o \
-	$(OBJDIR)/wnode.o \
-	$(OBJDIR)/wtree.o \
-	$(OBJDIR)/wunidirectionnal.o \
-	$(OBJDIR)/wvortex.o \
 
 RESOURCES := \
 
@@ -143,25 +137,7 @@ $(OBJDIR)/desert-simulation.o: ../Code/Source/desert-simulation.cpp
 $(OBJDIR)/desert.o: ../Code/Source/desert.cpp
 	@echo $(notdir $<)
 	$(SILENT) $(CXX) $(CXXFLAGS) -o "$@" -c "$<"
-$(OBJDIR)/heightfield.o: ../Code/Source/heightfield.cpp
-	@echo $(notdir $<)
-	$(SILENT) $(CXX) $(CXXFLAGS) -o "$@" -c "$<"
 $(OBJDIR)/main.o: ../Code/Source/main.cpp
-	@echo $(notdir $<)
-	$(SILENT) $(CXX) $(CXXFLAGS) -o "$@" -c "$<"
-$(OBJDIR)/wblend.o: ../Code/Source/wblend.cpp
-	@echo $(notdir $<)
-	$(SILENT) $(CXX) $(CXXFLAGS) -o "$@" -c "$<"
-$(OBJDIR)/wnode.o: ../Code/Source/wnode.cpp
-	@echo $(notdir $<)
-	$(SILENT) $(CXX) $(CXXFLAGS) -o "$@" -c "$<"
-$(OBJDIR)/wtree.o: ../Code/Source/wtree.cpp
-	@echo $(notdir $<)
-	$(SILENT) $(CXX) $(CXXFLAGS) -o "$@" -c "$<"
-$(OBJDIR)/wunidirectionnal.o: ../Code/Source/wunidirectionnal.cpp
-	@echo $(notdir $<)
-	$(SILENT) $(CXX) $(CXXFLAGS) -o "$@" -c "$<"
-$(OBJDIR)/wvortex.o: ../Code/Source/wvortex.cpp
 	@echo $(notdir $<)
 	$(SILENT) $(CXX) $(CXXFLAGS) -o "$@" -c "$<"
 
