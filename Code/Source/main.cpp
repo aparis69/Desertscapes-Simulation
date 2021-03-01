@@ -11,6 +11,22 @@
 #include "desert.h"
 #include <chrono>
 
+void OptimizedScene()
+{
+	// This function is the optimized version of the simulation, without slow atomic operations
+	// That I used in the original. This version is up to 4x faster, and is also can be easily
+	// Implemented in a Compute shader for even faster speedup ;-)
+	DuneSediment dune = DuneSediment(Box2D(Vector2(0), Vector2(256)), 1.0, 3.0, Vector2(1, 0));
+	auto start = std::chrono::steady_clock::now();
+	{
+		for (int i = 0; i < 100; i++)
+			dune.StepNoAtomic();
+	}
+	auto end = std::chrono::steady_clock::now();
+	std::cout << "Elapsed time in milliseconds: " << std::chrono::duration_cast<std::chrono::milliseconds>(end - start).count() << " ms" << std::endl;
+	dune.ExportObj("transverse.obj");
+}
+
 /*!
 \brief
 */
@@ -23,13 +39,12 @@ void ExportScenes()
 	auto start = std::chrono::steady_clock::now();
 	{
 		for (int i = 0; i < 100; i++)
-			dune.StepNoAtomic();
+			dune.SimulationStepMultiThreadAtomic();
 	}
 	auto end = std::chrono::steady_clock::now();
 	std::cout << "Elapsed time in milliseconds: " << std::chrono::duration_cast<std::chrono::milliseconds>(end - start).count() << " ms" << std::endl;
-	std::cin.get();
 	dune.ExportObj("transverse.obj");
-	//std::cout << "Done 1/4" << std::endl << std::endl;
+	std::cout << "Done 1/4" << std::endl << std::endl;
 
 	//// Barchan dunes appears under similar wind conditions, but lower sand supply.
 	//std::cout << "Barchan dunes" << std::endl;
@@ -68,5 +83,6 @@ meshes similar to the ones seen in the paper.
 int main()
 {
 	ExportScenes();
+	//OptimizedScene();
 	return 0;
 }

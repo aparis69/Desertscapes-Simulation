@@ -316,6 +316,16 @@ void DuneSediment::SnapWorld(Vector2& p) const
 
 
 
+/*
+	Optimized version of the algorithm without slow atomic operations.
+	This version works on a per-cell basis: each cell do its simulation independently from
+	all others.	The algorithm is in three parts:
+		1) Compute the deposition index map, ie. where sand will be deposited
+		for each cell. This section outputs an integer map.
+		2) Update sand elevations. Each cell will check its neighbours upwind
+		to see if something is deposited on itself.
+		3) Sand stabilization comes at the end, and is also race-condition free.
+*/
 static int* depositIndex = nullptr;
 static int maxBounce = 3;
 
@@ -327,37 +337,37 @@ static void Snap(int& i, int& j, int nx)
 		i = i - nx;
 }
 
-/*
-	New method, for testing: removes all slow atomic operations
-	And replace with a two pass methods.
-*/
 void DuneSediment::StepNoAtomic()
 {
 	if (depositIndex == nullptr)
 		depositIndex = new int[nx * ny];
 	
 #pragma omp parallel num_threads(OMP_NUM_THREAD)
-#pragma omp for
-	for (int i = 0; i < nx; i++)
 	{
-		for (int j = 0; j < ny; j++)
-			StepTransportNoAtomic(i, j);
-	}
+#pragma omp for
+		for (int i = 0; i < nx; i++)
+		{
+			for (int j = 0; j < ny; j++)
+				StepTransportNoAtomic(i, j);
+		}
 
 #pragma omp barrier
+
 #pragma omp for
-	for (int i = 0; i < nx; i++)
-	{
-		for (int j = 0; j < ny; j++)
-			StepUpdateNoAtomic(i, j);
-	}
+		for (int i = 0; i < nx; i++)
+		{
+			for (int j = 0; j < ny; j++)
+				StepUpdateNoAtomic(i, j);
+		}
 
 #pragma omp barrier
+
 #pragma omp for
-	for (int i = 0; i < nx; i++)
-	{
-		for (int j = 0; j < ny; j++)
-			StepStabilizationNoAtomic(i, j);
+		for (int i = 0; i < nx; i++)
+		{
+			for (int j = 0; j < ny; j++)
+				StepStabilizationNoAtomic(i, j);
+		}
 	}
 }
 
