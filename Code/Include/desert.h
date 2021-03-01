@@ -29,6 +29,12 @@ public:
 	DuneSediment(const Box2D& bbox, float rMin, float rMax, const Vector2& w);
 	~DuneSediment();
 
+	// Simulation, new method
+	void StepNoAtomic();
+	void StepTransportNoAtomic(int i, int j);
+	void StepUpdateNoAtomic(int i, int j);
+	void StepStabilizationNoAtomic(int i, int j);
+
 	// Simulation
 	int ToIndex1D(const Vector2i& q) const;
 	int ToIndex1D(int i, int j) const;

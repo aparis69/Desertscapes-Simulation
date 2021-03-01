@@ -4,7 +4,7 @@
 #include <omp.h>
 
 // File scope variables
-#define OMP_NUM_THREAD 8
+#define OMP_NUM_THREAD 16
 
 static float abrasionEpsilon = 0.5;
 static Vector2i next8[8] = { Vector2i(1, 0), Vector2i(1, 1), Vector2i(0, 1), Vector2i(-1, 1), Vector2i(-1, 0), Vector2i(-1, -1), Vector2i(0, -1), Vector2i(1, -1) };
@@ -312,4 +312,158 @@ void DuneSediment::SnapWorld(Vector2& p) const
 		p[1] = box.Size()[1] + p[1];
 	else if (p[1] >= box.Size()[1])
 		p[1] = p[1] - box.Size()[1];
+}
+
+
+
+static int* depositIndex = nullptr;
+static int maxBounce = 3;
+
+static void Snap(int& i, int& j, int nx)
+{
+	if (i < 0)
+		i = nx + i;
+	if (i >= nx)
+		i = i - nx;
+}
+
+/*
+	New method, for testing: removes all slow atomic operations
+	And replace with a two pass methods.
+*/
+void DuneSediment::StepNoAtomic()
+{
+	if (depositIndex == nullptr)
+		depositIndex = new int[nx * ny];
+	
+#pragma omp parallel num_threads(OMP_NUM_THREAD)
+#pragma omp for
+	for (int i = 0; i < nx; i++)
+	{
+		for (int j = 0; j < ny; j++)
+			StepTransportNoAtomic(i, j);
+	}
+
+#pragma omp barrier
+#pragma omp for
+	for (int i = 0; i < nx; i++)
+	{
+		for (int j = 0; j < ny; j++)
+			StepUpdateNoAtomic(i, j);
+	}
+
+#pragma omp barrier
+#pragma omp for
+	for (int i = 0; i < nx; i++)
+	{
+		for (int j = 0; j < ny; j++)
+			StepStabilizationNoAtomic(i, j);
+	}
+}
+
+void DuneSediment::StepTransportNoAtomic(int i, int j)
+{
+	int index = ToIndex1D(i, j);
+	depositIndex[index] = -1;
+
+	// Compute wind at start cell
+	Vector2 windDir = wind;
+
+	// Ignore empty & shadowed cells
+	if (sediments[index] <= 0.0f)
+		return;
+	if (IsInShadow(i, j, windDir))
+		return;
+
+	// Compute where sand will go and store the end index
+	int bounceCount = 0;
+	while (bounceCount <= maxBounce)
+	{
+		i += (int)windDir.x;
+		j += (int)windDir.y;
+
+		// Toric domain
+		Snap(i, j, nx);
+
+		// Probability of deposition
+		float p = Random::Uniform();
+
+		// Binary shadows: 100% chance of deposition
+		if (IsInShadow(i, j, windDir))
+		{
+			depositIndex[index] = ToIndex1D(i, j);
+			break;
+		}
+		// 60% chances of deposition on sandy cells
+		else if (sediments[ToIndex1D(i, j)] > 0.0f && p < 0.6f)
+		{
+			depositIndex[index] = ToIndex1D(i, j);
+			break;
+		}
+		// 40% chances of deposition on bare bedrock
+		else if (p < 0.4f)
+		{
+			depositIndex[index] = ToIndex1D(i, j);
+			break;
+		}
+
+		// Otherwise, bounce
+		bounceCount++;
+	}
+}
+
+void DuneSediment::StepUpdateNoAtomic(int i, int j)
+{
+	int index = ToIndex1D(i, j);
+
+	// Outgoing sand
+	if (depositIndex[index] != -1)
+	{
+		sediments[index] -= matterToMove;
+		sediments[index] = Math::Clamp(sediments[index], 0.0f, sediments[index]);
+	}
+
+	// Incoming sand
+	int cellI = i;
+	int cellJ = j;
+	for (int i = 0; i < maxBounce; i++)
+	{
+		Vector2 windDir = wind;
+		cellI -= (int)windDir.x;
+		cellJ -= (int)windDir.y;
+		Snap(cellI, cellJ, nx);
+		if (depositIndex[cellI * ny + cellJ] == index)
+			sediments[index] += matterToMove;
+	}
+}
+
+void DuneSediment::StepStabilizationNoAtomic(int i, int j)
+{
+	int index = ToIndex1D(i, j);
+	int cellI = i;
+	int cellJ = j;
+
+	// Sample a 3x3 grid around the pixel and check stability
+	float z = Height(cellI, cellJ);
+	bool willReceiveMatter = false;
+	bool willDistributeMatter = false;
+	for (int i = 0; i < 3; i++)
+	{
+		for (int j = 0; j < 3; j++)
+		{
+			float zNei = Height((cellI + i - 1 + nx) % nx, (cellJ + j - 1 + ny) % ny);
+
+			float zd = zNei - z;
+			if (zd / cellSize > tanThresholdAngleSediment)
+				willReceiveMatter = true;
+
+			zd = z - zNei;
+			if (zd / cellSize > tanThresholdAngleSediment)
+				willDistributeMatter = true;
+		}
+	}
+
+	// Add/Remove matter if necessary
+	float zOut = z + (willReceiveMatter ? matterToMove : 0.0f) - (willDistributeMatter ? matterToMove : 0.0f);
+	sediments[index] = zOut;
 }
