@@ -43,213 +43,6 @@ public:
 	}
 };
 
-
-// AABB 3D class
-class Box
-{
-protected:
-	Vector3 a;
-	Vector3 b;
-
-public:
-	explicit Box(const Vector3& A, const Vector3& B);
-	explicit Box(const Vector3& C, float R);
-	explicit Box(const Box& b1, const Box& b2);
-
-	bool Contains(const Vector3&) const;
-	Box Extended(const Vector3&) const;
-	float Distance(const Vector3& p) const;
-	Vector3 RandomInside() const;
-	void SetParallelepipedic(float size, int& x, int& y, int& z);
-	void SetParallelepipedic(int n, int& x, int& y, int& z);
-	Vector3 Vertex(int) const;
-	Vector3 BottomLeft() const;
-	Vector3 TopRight() const;
-	Vector3& operator[](int i);
-	Vector3 operator[](int i) const;
-};
-
-/*
-\brief Constructor
-\param A lower left vertex in world coordinates
-\param B upper right vertex in world coordinates
-*/
-inline Box::Box(const Vector3& A, const Vector3& B) : a(A), b(B)
-{
-}
-
-/*
-\brief Constructor
-\param C box center
-\param R radius
-*/
-inline Box::Box(const Vector3& C, float R)
-{
-	Vector3 RR = Vector3(R);
-	a = C - RR;
-	b = C + RR;
-}
-
-/*!
-\brief Constructor from 2 boxes
-\param b1 first box
-\param b2 second box
-*/
-inline Box::Box(const Box& b1, const Box& b2)
-{
-	a = Vector3::Min(b1.a, b2.a);
-	b = Vector3::Max(b1.b, b2.b);
-}
-
-/*
-\brief Returns true if p is inside the box, false otherwise.
-\param p world point
-*/
-inline bool Box::Contains(const Vector3& p) const
-{
-	return (p > a && p < b);
-}
-
-/*
-\brief Returns the extended version of this box, without changing the instance.
-\param r extending factor
-*/
-inline Box Box::Extended(const Vector3& r) const
-{
-	return Box(a - r, b + r);
-}
-
-/*!
-\brief Creates a parallelepipedic box whose dimensions are integer
-multiples of a given input reference size.
-\param size Reference size, the dimension of the box will be a multiple of this size.
-\param x, y ,z Three integers initialized in this function.
-*/
-inline void Box::SetParallelepipedic(float size, int& x, int& y, int& z)
-{
-	// Diagonal
-	Vector3 d = (b - a);
-
-	// Integer sizes
-	x = int(d[0] / size);
-	y = int(d[1] / size);
-	z = int(d[2] / size);
-
-	// Expand if necessary
-	if (x == 0) { x++; }
-	if (y == 0) { y++; }
-	if (z == 0) { z++; }
-
-	// Center
-	Vector3 c = (a + b) * 0.5f;
-
-	// Diagonal
-	Vector3 e = Vector3(float(x), float(y), float(z)) * size / 2.0f;
-	a = c - e;
-	b = c + e;
-}
-
-/*!
-\brief Inflates a box so that its dimensions should be a fraction of its maximum side length.
-\param n Fraction.
-\param x, y, z Three integers initialized in this function.
-*/
-inline void Box::SetParallelepipedic(int n, int& x, int& y, int& z)
-{
-	Vector3 d = (b - a); // Diagonal
-	float e = d.Max(); // Maximum side length
-	float size = e / n;
-	SetParallelepipedic(size, x, y, z);
-}
-
-/*!
-\brief Compute the distance between a point and the box.
-\param p point
-*/
-inline float Box::Distance(const Vector3& p) const
-{
-	float r = 0.0;
-	for (int i = 0; i < 3; i++)
-	{
-		if (p[i] < a[i])
-		{
-			float s = p[i] - a[i];
-			r += s * s;
-		}
-		else if (p[i] > b[i])
-		{
-			float s = p[i] - b[i];
-			r += s * s;
-		}
-	}
-	return r;
-}
-
-/*!
-\brief Compute a random point inside a box. Note that this
-is not a uniform sampling if the box is not a regular box (width = height = length).
-
-In practice, a uniform sampling doesn't give different results and is way slower, so
-we avoid this.
-
-\return a random point inside the box.
-*/
-inline Vector3 Box::RandomInside() const
-{
-	Vector3 s = b - a;
-	float randw = Random::Uniform(-1.0f * s[0] / 2.0f, s[0] / 2.0f);
-	float randh = Random::Uniform(-1.0f * s[1] / 2.0f, s[1] / 2.0f);
-	float randl = Random::Uniform(-1.0f * s[2] / 2.0f, s[2] / 2.0f);
-	return (a + b) / 2.0f + Vector3(randw, randh, randl);
-}
-
-/*
-\brief Get one of the vertex of the box.
-*/
-inline Vector3 Box::Vertex(int i) const
-{
-	if (i == 0)
-		return a;
-	return b;
-}
-
-/*
-\brief Get bottom left vertex in world coordinates
-*/
-inline Vector3 Box::BottomLeft() const
-{
-	return a;
-}
-
-/*
-\brief Get top right vertex in world coordinates
-*/
-inline Vector3 Box::TopRight() const
-{
-	return b;
-}
-
-/*
-\brief Access box vertex by reference
-*/
-inline Vector3& Box::operator[](int i)
-{
-	if (i == 0)
-		return a;
-	return b;
-}
-
-/*
-\brief Access box vertex by const value
-*/
-inline Vector3 Box::operator[](int i) const
-{
-	if (i == 0)
-		return a;
-	return b;
-}
-
-
 // AABB 2D class.
 class Box2D
 {
@@ -262,18 +55,13 @@ public:
 	explicit Box2D(const Box2D& b1, const Box2D& b2);
 	explicit Box2D(const Vector2& A, const Vector2& B);
 	explicit Box2D(const Vector2& C, float R);
-	explicit Box2D(const Box& b);
 
-	bool Contains(const Vector2&) const;
-	bool Intersect(const Box2D& box) const;
-	float Distance(const Vector2& p) const;
 	float Width() const;
 	Vector2 Size() const;
 	Vector2 Vertex(int i) const;
 	Vector2 Center() const;
 	Vector2 BottomLeft() const;
 	Vector2 TopRight() const;
-	Box ToBox(float zMin, float zMax) const;
 	Vector2& operator[](int i);
 	Vector2 operator[](int i) const;
 };
@@ -317,60 +105,6 @@ inline Box2D::Box2D(const Vector2& C, float R)
 	Vector2 RR = Vector2(R);
 	a = C - RR;
 	b = C + RR;
-}
-
-/*!
-\brief Constructor from a 3D box.
-\param box the box
-*/
-inline Box2D::Box2D(const Box& box)
-{
-	a = Vector2(box.Vertex(0));
-	b = Vector2(box.Vertex(1));
-}
-
-/*
-\brief Returns true if p is inside the box, false otherwise.
-\param p world point
-*/
-inline bool Box2D::Contains(const Vector2& p) const
-{
-	return (p > a && p < b);
-}
-
-/*!
-\brief Check if the 2D box intersects another 2D box.
-\param box argument box.
-*/
-inline bool Box2D::Intersect(const Box2D& box) const
-{
-	if (((a[0] >= box.b[0]) || (a[1] >= box.b[1]) || (b[0] <= box.a[0]) || (b[1] <= box.a[1])))
-		return false;
-	else
-		return true;
-}
-
-/*:
-\brief Compute the distance between a point and the box.
-\param p point
-*/
-inline float Box2D::Distance(const Vector2 & p) const
-{
-	float r = 0.0;
-	for (int i = 0; i < 2; i++)
-	{
-		if (p[i] < a[i])
-		{
-			float s = p[i] - a[i];
-			r += s * s;
-		}
-		else if (p[i] > b[i])
-		{
-			float s = p[i] - b[i];
-			r += s * s;
-		}
-	}
-	return r;
 }
 
 /*
@@ -425,16 +159,6 @@ inline float Box2D::Width() const
 }
 
 /*
-\brief Transform a Box2 in a Box.
-\param yMin altitude of the first vertex for the new Box
-\param yMax altitude of the second vertex for the new Box
-*/
-inline Box Box2D::ToBox(float yMin, float yMax) const
-{
-	return Box(a.ToVector3(yMin), b.ToVector3(yMax));
-}
-
-/*
 \brief Access box vertex by reference
 */
 inline Vector2& Box2D::operator[](int i)
@@ -452,144 +176,6 @@ inline Vector2 Box2D::operator[](int i) const
 	if (i == 0)
 		return a;
 	return b;
-}
-
-
-// Circle2. A Circle geometric element.
-class Circle2
-{
-protected:
-	Vector2 center;
-	float radius;
-
-public:
-	Circle2(const Vector2& c, float r);
-
-	Vector2 RandomOn() const;
-	Vector2 Center() const;
-	float Radius() const;
-	bool Contains(const Vector2& p) const;
-};
-
-/*!
-\brief Constructor
-\param c center
-\param r radius
-*/
-inline Circle2::Circle2(const Vector2& c, float r)
-{
-	center = c;
-	radius = r;
-}
-
-/*!
-\brief Compute a random point on the circle, uniformly.
-*/
-inline Vector2 Circle2::RandomOn() const
-{
-	float u = Random::Uniform(-radius, radius);
-	float v = Random::Uniform(-radius, radius);
-	float s = u * u + v * v;
-
-	float rx = (u * u - v * v) / s;
-	float ry = 2.0f * u * v / s;
-	return center + radius * Vector2(rx, ry);
-}
-
-/*!
-\brief Returns the circle center.
-*/
-inline Vector2 Circle2::Center() const
-{
-	return center;
-}
-
-/*!
-\brief Returns the circle radius.
-*/
-inline float Circle2::Radius() const
-{
-	return radius;
-}
-
-/*!
-\brief Check if a given point lies inside the circle.
-*/
-inline bool Circle2::Contains(const Vector2& p) const
-{
-	return (Magnitude(p - center) < radius);
-}
-
-
-// Sphere. Spherical geometric element.
-class Sphere
-{
-protected:
-	Vector3 center;
-	float radius;
-
-public:
-	Sphere(const Vector3& c, float r);
-
-	float Distance(const Vector3& p) const;
-	bool Contains(const Vector3& p) const;
-	Vector3 RandomInside() const;
-	Vector3 Center() const;
-	float Radius() const;
-};
-
-/*!
-\brief Constructor.
-\param c center
-\param r radius
-*/
-inline Sphere::Sphere(const Vector3& c, float r) : center(c), radius(r)
-{
-
-}
-
-/*!
-\brief Compute the distance between a point and a sphere.
-If the point lies inside the sphere, the distance is considered to be 0.
-\param p world point
-*/
-inline float Sphere::Distance(const Vector3& p) const
-{
-	float d = Magnitude(p - center);
-	return d < radius ? 0 : d;
-}
-
-/*!
-\brief Returns true of the point lies inside the sphere (ie. Distance(p) == 0)
-\param p world point
-*/
-inline bool Sphere::Contains(const Vector3& p) const
-{
-	return Distance(p) == 0;
-}
-
-/*!
-\brief Compute a random point inside a sphere, uniformly.
-*/
-inline Vector3 Sphere::RandomInside() const
-{
-	return center + Vector3(Random::Uniform(-radius, radius), Random::Uniform(-radius, radius), Random::Uniform(-radius, radius));
-}
-
-/*!
-\brief Returns the sphere center.
-*/
-inline Vector3 Sphere::Center() const
-{
-	return center;
-}
-
-/*!
-\brief Returns the sphere radius.
-*/
-inline float Sphere::Radius() const
-{
-	return radius;
 }
 
 
@@ -783,47 +369,12 @@ public:
 	}
 
 	/*!
-	\brief Check if a point lies inside the bounding box of the field.
-	*/
-	inline bool Inside(const Vector2i& v) const
-	{
-		if (v.x < 0 || v.x >= nx || v.y < 0 || v.y >= ny)
-			return false;
-		return true;
-	}
-
-	/*!
-	\brief Utility.
-	*/
-	inline Vector2i ToIndex2D(const Vector2& p) const
-	{
-		Vector2 q = p - box.Vertex(0);
-		Vector2 d = box.Vertex(1) - box.Vertex(0);
-
-		float u = q[0] / d[0];
-		float v = q[1] / d[1];
-
-		int j = int(u * (nx - 1));
-		int i = int(v * (ny - 1));
-
-		return Vector2i(i, j);
-	}
-
-	/*!
 	\brief Utility.
 	*/
 	inline void ToIndex2D(int index, int& i, int& j) const
 	{
 		i = index / nx;
 		j = index % nx;
-	}
-
-	/*!
-	\brief Utility.
-	*/
-	inline Vector2i ToIndex2D(int index) const
-	{
-		return Vector2i(index / nx, index % nx);
 	}
 
 	/*!
@@ -988,14 +539,6 @@ public:
 	/*!
 	\brief Set a given value at a given coordinate.
 	*/
-	inline void Set(const Vector2i& coord, float v)
-	{
-		values[ToIndex1D(coord)] = v;
-	}
-
-	/*!
-	\brief Set a given value at a given coordinate.
-	*/
 	inline void Set(int index, float v)
 	{
 		values[index] = v;
@@ -1054,14 +597,6 @@ public:
 		for (int i = 0; i < values.size(); i++)
 			sum += values[i];
 		return sum / values.size();
-	}
-
-	/*!
-	\brief Returns the size of the array.
-	*/
-	inline Vector2i Size() const
-	{
-		return Vector2i(nx, ny);
 	}
 
 	/*!

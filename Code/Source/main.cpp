@@ -43,8 +43,6 @@ void ExportScenes()
 	std::cout << "Done 3/4" << std::endl << std::endl;
 
 	// Nabkha are created under the influence of vegetation, also a flag to turn on.
-	// Of course, it is quite difficult to see the differences withtout actually placing vegetation at the right places.
-	// @Todo(Axel): Make a more interesting scene.
 	std::cout << "Nabkha" << std::endl;
 	dune = DuneSediment(Box2D(Vector2(0), Vector2(256)), 1.0, 3.0, Vector2(3, 0));
 	dune.SetVegetationMode(true);
