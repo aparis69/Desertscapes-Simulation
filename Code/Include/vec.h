@@ -42,21 +42,6 @@ namespace Math
 		}
 	}
 
-	/*!
-	\brief Check if a real number is not NaN.
-	The code is simply:
-	\code
-	return (x == x);
-	\endcode
-	This looks like it should always be true, but it's false if x is a NaN.
-	\param x Real value.
-	*/
-	template<typename T>
-	inline bool IsNumber(T x)
-	{
-		return (x == x);
-	}
-
 	template<typename T>
 	inline T Min(T a, T b)
 	{
@@ -75,73 +60,9 @@ namespace Math
 		return ((1.0f - t) * a) + (t * b);
 	}
 
-	inline float Sqr(float x)
-	{
-		return x * x;
-	}
-
 	inline float Abs(float a)
 	{
 		return a < 0 ? -a : a;
-	}
-
-	inline float CubicSmoothCompact(float x, float r)
-	{
-		return (x > r) ? 0.0f : (1.0f - x / r)*(1.0f - x / r)*(1.0f - x / r);
-	}
-
-	inline float CubicSigmoid(float x, float r, float t)
-	{
-		if (x > 0.0f)
-		{
-			if (x < r)
-			{
-				return x * (1.0f + x * ((3.0f*t - 2.0f*r) / (r*r) + x * (r - 2.0f*t) / (r*r*r)));
-			}
-			else
-			{
-				return t;
-			}
-		}
-		else
-		{
-			if (x > -r)
-			{
-				// Use symmetric
-				float y = -x;
-				return  -(y * (1.0f + y * ((3.0f*t - 2.0f*r) / (r*r) + y * (r - 2.0f*t) / (r*r*r))));
-			}
-			else
-			{
-				return -t;
-			}
-		}
-	}
-
-	inline float CubicSmooth(float x)
-	{
-		return x * x * (3.0f - 2.0f * x);
-	}
-
-	inline float CubicSmooth(float x, float r)
-	{
-		return (1.0f - x / r) * (1.0f - x / r) * (1.0f - x / r);
-	}
-
-	inline float CubicSmoothStep(float x, float a, float b)
-	{
-		if (x < a)
-		{
-			return 0.0f;
-		}
-		else if (x > b)
-		{
-			return 1.0f;
-		}
-		else
-		{
-			return 1.0f - CubicSmooth((x - a) * (x - a), (b - a) * (b - a));
-		}
 	}
 
 	inline float QuinticSmooth(float t)
