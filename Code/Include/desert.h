@@ -46,9 +46,9 @@ public:
 	void StabilizeBedrockAll();
 	void PerformAbrasionOnCell(int i, int j, const Vector2& windDir);
 
-	// Exports & Meshing
+	// Exports
 	void ExportObj(const std::string& file) const;
-	void ExportObj(std::vector<Vector3>& vertex, std::vector<Vector3>& normals, std::vector<Vector3>& colors, std::vector<int>& indices) const;
+	void ExportJPG(const std::string& url) const;
 
 	// Inlined functions and query
 	float Height(int i, int j) const;
@@ -57,8 +57,6 @@ public:
 	float Sediment(int i, int j) const;
 	void SetAbrasionMode(bool c);
 	void SetVegetationMode(bool c);
-	void SetBedrockData(const ScalarField2D& f);
-	void SetSedimentData(const ScalarField2D& f);
 };
 
 /*!
@@ -125,20 +123,4 @@ inline void DuneSediment::SetAbrasionMode(bool c)
 inline void DuneSediment::SetVegetationMode(bool c)
 {
 	vegetationOn = c;
-}
-
-/*!
-\brief
-*/
-inline void DuneSediment::SetBedrockData(const ScalarField2D& f)
-{
-	bedrock = f;
-}
-
-/*!
-\brief
-*/
-inline void DuneSediment::SetSedimentData(const ScalarField2D& f)
-{
-	sediments = f;
 }

@@ -23,6 +23,9 @@
     <ClInclude Include="..\Code\Include\desert.h">
       <Filter>Header Files</Filter>
     </ClInclude>
+    <ClInclude Include="..\Code\Include\stb_image_write.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="..\Code\Source\main.cpp">

@@ -8,12 +8,15 @@
 	axel(dot)paris(at)liris(dot)cnrs(dot)fr
 */
 
+#define _CRT_SECURE_NO_WARNINGS
+
 #include "desert.h"
 
 /*!
-\brief
+\brief Running this program will export some
+meshes similar to the ones seen in the paper.
 */
-void ExportScenes()
+int main()
 {
 	// Transverse dunes are created under unimodal wind, as well as medium to high sand supply.
 	// They are basically the default dune type obtained by any basic simulation scenario.
@@ -21,7 +24,7 @@ void ExportScenes()
 	DuneSediment dune = DuneSediment(Box2D(Vector2(0), Vector2(256)), 1.0, 3.0, Vector2(3, 0));
 	for (int i = 0; i < 300; i++)
 		dune.SimulationStepMultiThreadAtomic();
-	dune.ExportObj("transverse.obj");
+	dune.ExportJPG("transverse.jpg");
 	std::cout << "Done 1/4" << std::endl << std::endl;
 
 	// Barchan dunes appears under similar wind conditions, but lower sand supply.
@@ -29,7 +32,7 @@ void ExportScenes()
 	dune = DuneSediment(Box2D(Vector2(0), Vector2(256)), 0.5, 0.5, Vector2(3, 0));
 	for (int i = 0; i < 300; i++)
 		dune.SimulationStepMultiThreadAtomic();
-	dune.ExportObj("barchan.obj");
+	dune.ExportJPG("barchan.jpg");
 	std::cout << "Done 2/4" << std::endl << std::endl;
 
 	// Yardangs are created by abrasion, activated with a specific flag in our simulation.
@@ -39,7 +42,7 @@ void ExportScenes()
 	dune.SetAbrasionMode(true);
 	for (int i = 0; i < 600; i++)
 		dune.SimulationStepMultiThreadAtomic();
-	dune.ExportObj("yardangs.obj");
+	dune.ExportJPG("yardangs.jpg");
 	std::cout << "Done 3/4" << std::endl << std::endl;
 
 	// Nabkha are created under the influence of vegetation, also a flag to turn on.
@@ -48,16 +51,8 @@ void ExportScenes()
 	dune.SetVegetationMode(true);
 	for (int i = 0; i < 300; i++)
 		dune.SimulationStepMultiThreadAtomic();
-	dune.ExportObj("nabkha.obj");
+	dune.ExportJPG("nabkha.jpg");
 	std::cout << "Done 4/4" << std::endl << std::endl;
-}
 
-/*!
-\brief Running this program will export some
-meshes similar to the ones seen in the paper.
-*/
-int main()
-{
-	ExportScenes();
 	return 0;
 }

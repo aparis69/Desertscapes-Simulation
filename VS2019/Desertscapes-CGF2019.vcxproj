@@ -22,6 +22,7 @@
     <ClInclude Include="..\Code\Include\basics.h" />
     <ClInclude Include="..\Code\Include\desert.h" />
     <ClInclude Include="..\Code\Include\noise.h" />
+    <ClInclude Include="..\Code\Include\stb_image_write.h" />
     <ClInclude Include="..\Code\Include\vec.h" />
   </ItemGroup>
   <ItemGroup>

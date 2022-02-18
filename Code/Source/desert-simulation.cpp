@@ -14,7 +14,7 @@ static Vector2i Next(int i, int j, int k)
 }
 
 /*!
-\brief
+\brief Perform a simulation step.
 */
 void DuneSediment::SimulationStepMultiThreadAtomic()
 {
@@ -201,6 +201,9 @@ void DuneSediment::PerformReptationOnCell(int i, int j, int bounce)
 
 /*!
 \brief Compute the wind direction at a given cell.
+\param i cell coordinate
+\param j cell coordinate
+\param windDir wind direction
 */
 void DuneSediment::ComputeWindAtCell(int i, int j, Vector2& windDir) const
 {

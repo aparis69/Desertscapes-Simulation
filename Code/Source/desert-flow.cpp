@@ -118,9 +118,10 @@ void DuneSediment::StabilizeSedimentRelative(int i, int j)
 }
 
 /*!
-\brief Todo
-\param i
-\param j
+\brief Stabilize a given grid vertex with the use of CheckBedrockFlowRelative() function.
+Used by multi-thread functions, but can also be used in a single-thread context.
+\param i x coordinate
+\param j y coordinate
 */
 bool DuneSediment::StabilizeBedrockRelative(int i, int j)
 {
@@ -162,7 +163,7 @@ bool DuneSediment::StabilizeBedrockRelative(int i, int j)
 }
 
 /*!
-\brief Todo
+\brief Stabilization function for the bedrock layer.
 */
 void DuneSediment::StabilizeBedrockAll()
 {

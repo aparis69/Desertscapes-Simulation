@@ -4,8 +4,13 @@
 #include <iostream>
 #include <fstream>
 
+#define STB_IMAGE_WRITE_IMPLEMENTATION
+#include "stb_image_write.h"
+
+
+
 /*!
-\brief Todo
+\brief Default constructor.
 */
 DuneSediment::DuneSediment()
 {
@@ -23,7 +28,11 @@ DuneSediment::DuneSediment()
 }
 
 /*!
-\brief Todo
+\brief Constructor.
+\param bbox 2D bounding box
+\param rMin min amount of sediment per cell
+\param rMax max amount of sediment per cell
+\param w wind vector
 */
 DuneSediment::DuneSediment(const Box2D& bbox, float rMin, float rMax, const Vector2& w)
 {
@@ -51,26 +60,6 @@ DuneSediment::DuneSediment(const Box2D& bbox, float rMin, float rMax, const Vect
 		}
 	}
 
-	// Debug code to write a ppm file showing the vegetation.
-	// @Todo: could be refactored in the scalarfield2 class.
-	//int i, j;
-	//FILE* fp;
-	//fopen_s(&fp, "first.ppm", "wb"); /* b - binary mode */
-	//(void)fprintf(fp, "P6\n%d %d\n255\n", nx, ny);
-	//for (j = 0; j < nx; ++j)
-	//{
-	//	for (i = 0; i < ny; ++i)
-	//	{
-	//		static unsigned char color[3];
-	//		int v = (int)(vegetation.Get(i, j) * 256);
-	//		color[0] = v % 256;  /* red */
-	//		color[1] = v % 256;  /* green */
-	//		color[2] = v % 256;  /* blue */
-	//		(void)fwrite(color, 1, 3, fp);
-	//	}
-	//}
-	//(void)fclose(fp);
-
 	Vector2 celldiagonal = Vector2((box.TopRight()[0] - box.BottomLeft()[0]) / (nx - 1), (box.TopRight()[1] - box.BottomLeft()[1]) / (ny - 1));
 	cellSize = Box2D(box.BottomLeft(), box.BottomLeft() + celldiagonal).Size().x; // We only consider squared heightfields
 
@@ -78,7 +67,7 @@ DuneSediment::DuneSediment(const Box2D& bbox, float rMin, float rMax, const Vect
 }
 
 /*!
-\brief Todo
+\brief Destructor.
 */
 DuneSediment::~DuneSediment()
 {
@@ -86,7 +75,8 @@ DuneSediment::~DuneSediment()
 }
 
 /*!
-\brief Todo
+\brief Export the current dune model as an obj file representing the full heightfield.
+\param url file path
 */
 void DuneSediment::ExportObj(const std::string& url) const
 {
@@ -151,48 +141,25 @@ void DuneSediment::ExportObj(const std::string& url) const
 }
 
 /*!
-\brief Todo
+\brief Export the current dune model as a jpg file.
+\param url file path
 */
-void DuneSediment::ExportObj(std::vector<Vector3>& vertices, std::vector<Vector3>& normals, std::vector<Vector3>& colors, std::vector<int>& indices) const
+void DuneSediment::ExportJPG(const std::string& url) const
 {
-	// Vertices & UVs & Normals
-	normals.resize(nx * ny, Vector3(0));
-	vertices.resize(nx * ny, Vector3(0));
-	colors.resize(nx * ny, Vector3(0));
-	for (int i = 0; i < nx; i++)
+	float min = bedrock.Min() - sediments.Min();
+	float max = bedrock.Max() + sediments.Max();
+	uint8_t* pixels = new uint8_t[nx * ny * 3];
+	int index = 0;
+	for (int j = 0; j < ny; j++)
 	{
-		for (int j = 0; j < ny; j++)
+		for (int i = 0; i < nx; i++)
 		{
-			int id = ToIndex1D(i, j);
-			normals[id] = -Normalize(Vector2(bedrock.Gradient(i, j) + sediments.Gradient(i, j)).ToVector3(-2.0f));
-			vertices[id] = Vector3(
-				box[0][0] + i * (box[1][0] - box[0][0]) / (nx - 1),
-				Height(i, j),
-				box[0][1] + j * (box[1][1] - box[0][1]) / (ny - 1)
-			);
-
-			if (sediments.Get(id) < 0.25)
-				colors[id] = Vector3(0.5, 0.5, 0.5);
-			else
-				colors[id] = Vector3(240 / 255.0f, 200 / 255.0f, 141 / 255.0f);
+			float h = Math::Step(Height(i, j), min, max);
+			int hi = int(255.99 * h);
+			pixels[index++] = hi;
+			pixels[index++] = hi;
+			pixels[index++] = hi;
 		}
 	}
-
-	// Triangles
-	int c = 0;
-	int vertexArrayLength = ny * nx;
-	while (c < vertexArrayLength - nx - 1)
-	{
-		if (c == 0 || (((c + 1) % nx != 0) && c <= vertexArrayLength - nx))
-		{
-			indices.push_back(c + nx + 1);
-			indices.push_back(c + nx);
-			indices.push_back(c);
-
-			indices.push_back(c);
-			indices.push_back(c + 1);
-			indices.push_back(c + nx + 1);
-		}
-		c++;
-	}
+	stbi_write_jpg(url.c_str(), nx, ny, 3, pixels, 98);
 }

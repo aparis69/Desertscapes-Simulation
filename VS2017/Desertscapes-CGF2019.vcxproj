@@ -21,28 +21,21 @@
   <ItemGroup>
     <ClInclude Include="..\Code\Include\basics.h" />
     <ClInclude Include="..\Code\Include\desert.h" />
-    <ClInclude Include="..\Code\Include\heightfield.h" />
     <ClInclude Include="..\Code\Include\noise.h" />
+    <ClInclude Include="..\Code\Include\stb_image_write.h" />
     <ClInclude Include="..\Code\Include\vec.h" />
-    <ClInclude Include="..\Code\Include\wtree.h" />
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="..\Code\Source\desert-flow.cpp" />
     <ClCompile Include="..\Code\Source\desert-simulation.cpp" />
     <ClCompile Include="..\Code\Source\desert.cpp" />
-    <ClCompile Include="..\Code\Source\heightfield.cpp" />
     <ClCompile Include="..\Code\Source\main.cpp" />
-    <ClCompile Include="..\Code\Source\wblend.cpp" />
-    <ClCompile Include="..\Code\Source\wnode.cpp" />
-    <ClCompile Include="..\Code\Source\wtree.cpp" />
-    <ClCompile Include="..\Code\Source\wunidirectionnal.cpp" />
-    <ClCompile Include="..\Code\Source\wvortex.cpp" />
   </ItemGroup>
   <PropertyGroup Label="Globals">
     <VCProjectVersion>15.0</VCProjectVersion>
     <ProjectGuid>{B3831FC6-FED7-4E0E-A51F-9D1C542F616E}</ProjectGuid>
     <RootNamespace>ImplicitTerrainsTOG2019</RootNamespace>
-    <WindowsTargetPlatformVersion>10.0.17763.0</WindowsTargetPlatformVersion>
+    <WindowsTargetPlatformVersion>10.0.18362.0</WindowsTargetPlatformVersion>
   </PropertyGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.Default.props" />
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'" Label="Configuration">
