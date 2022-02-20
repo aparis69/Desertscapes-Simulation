@@ -6,7 +6,10 @@
 
 Source code for some results shown in the paper "Desertscapes Simulation" published in Computer Graphics Forum in 2019
 and presented at Pacific Graphics 2019. This is aimed at researchers, students or profesionnals who may want to reproduce **some** of the results described in the paper.
-[Click here for more information about the project](https://aparis69.github.io/public_html/projects/paris2019_Deserts.html).
+
+[Project Page](https://aparis69.github.io/public_html/projects/paris2019_Deserts.html).
+
+[Paper](https://drive.google.com/file/d/1-655HLtI1zV6aHD13GYZEqdJ_Zkoa-lB/view)
 
 ### Important notes
 * This code is **not** the one which produced the scenes seen in the paper. Everything has been *recoded* on my side to make sure it is free to use. The original code from the paper is dependent on internal libraries of my team.
