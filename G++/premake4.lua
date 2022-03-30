@@ -1,5 +1,5 @@
 solution "Desertscape"
-	configurations { "Debug", "Release" }
+	configurations { "release" }
 
 	platforms { "x64" }
 	
@@ -7,11 +7,6 @@ solution "Desertscape"
 
 	rootDir = path.getabsolute("../")
 	
-	configuration "Debug"
-		targetdir "./Out/Debug"
-		defines { "DEBUG" }
-		flags { "Symbols" }
-
 	configuration "Release"
 		targetdir "./Out/Release"
 		flags { "OptimizeSpeed" }
