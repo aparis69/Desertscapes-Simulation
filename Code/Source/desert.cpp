@@ -52,8 +52,8 @@ DuneSediment::DuneSediment(const Box2D& bbox, float rMin, float rMax, const Vect
 			// Vegetation
 			// Arbitrary clamped 2D noise - but you can use whatever you want.
 			float v = PerlinNoise::fBm(Vector3(i * 7.91247f, j * 7.91247f, 0.0f), 1.0f, 0.002f, 3) / 1.75f;
-			if (v > 0.58f)
-				vegetation.Set(i, j, v);
+			if (v > 0.45f)
+				vegetation.Set(i, j, 0.85f);
 
 			// Sand
 			sediments.Set(i, j, Random::Uniform(rMin, rMax));

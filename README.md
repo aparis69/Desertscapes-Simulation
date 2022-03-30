@@ -20,9 +20,10 @@ Hence, the results as well as the timings may differ from the ones in the paper.
 There is no dependency. Running the program will output 3 .obj files which can then be visualized in another application (Blender, MeshLab). Tests have been made on:
 * Visual Studio 2017: double click on the solution in ./VS2017/ and Ctrl + F5 to run
 * Visual Studio 2019: double click on the solution in ./VS2019/ and Ctrl + F5 to run
+* Visual Studio 2019: double click on the solution in ./VS2022/ and Ctrl + F5 to run
 * Ubuntu 16.04: cd ./G++/ && make && make run
 
-In you can't compile or run the code, the resulting obj files are available in the Objs/ folder in the repo.
+In you can't compile or run the code, the resulting obj/jpg files are available in the Results/ folder in the repo.
 
 ### Citation
 You can use this code in any way you want, however please credit the original article:

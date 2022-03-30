@@ -1,8 +1,7 @@
 /*
 	This is an example implementation of some of the results described in the paper "Desertscapes Simulation".
 
-	No real time visualization in order to reduce dependencies. Running the program will output 3 .obj files which
-	can then be visualized in another application (Blender, MeshLab).
+	No real time visualization in order to reduce dependencies. Running the program will output 4 heightfields (jpg files).
 
 	If you have any questions, you can contact me at:
 	axel(dot)paris(at)liris(dot)cnrs(dot)fr
@@ -21,7 +20,7 @@ int main()
 	// Transverse dunes are created under unimodal wind, as well as medium to high sand supply.
 	// They are basically the default dune type obtained by any basic simulation scenario.
 	std::cout << "Transverse dunes" << std::endl;
-	DuneSediment dune = DuneSediment(Box2D(Vector2(0), Vector2(256)), 1.0, 3.0, Vector2(3, 0));
+	DuneSediment dune = DuneSediment(Box2D(Vector2(0), Vector2(256)), 2.0, 5.0, Vector2(3, 0));
 	for (int i = 0; i < 300; i++)
 		dune.SimulationStepMultiThreadAtomic();
 	dune.ExportJPG("transverse.jpg");
@@ -47,7 +46,7 @@ int main()
 
 	// Nabkha are created under the influence of vegetation, also a flag to turn on.
 	std::cout << "Nabkha" << std::endl;
-	dune = DuneSediment(Box2D(Vector2(0), Vector2(256)), 1.0, 3.0, Vector2(3, 0));
+	dune = DuneSediment(Box2D(Vector2(0), Vector2(256)), 2.0, 5.0, Vector2(3, 0));
 	dune.SetVegetationMode(true);
 	for (int i = 0; i < 300; i++)
 		dune.SimulationStepMultiThreadAtomic();
