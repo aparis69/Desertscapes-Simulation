@@ -20,7 +20,7 @@ int main()
 	// Transverse dunes are created under unimodal wind, as well as medium to high sand supply.
 	// They are basically the default dune type obtained by any basic simulation scenario.
 	std::cout << "Transverse dunes" << std::endl;
-	DuneSediment dune = DuneSediment(Box2D(Vector2(0), Vector2(256)), 2.0, 5.0, Vector2(3, 0));
+	DuneSediment dune = DuneSediment(Box2D(Vector2(0), Vector2(256)), 3.0, 5.0, Vector2(3, 0));
 	for (int i = 0; i < 300; i++)
 		dune.SimulationStepMultiThreadAtomic();
 	dune.ExportJPG("transverse.jpg");
@@ -28,7 +28,7 @@ int main()
 
 	// Barchan dunes appears under similar wind conditions, but lower sand supply.
 	std::cout << "Barchan dunes" << std::endl;
-	dune = DuneSediment(Box2D(Vector2(0), Vector2(256)), 0.5, 0.5, Vector2(3, 0));
+	dune = DuneSediment(Box2D(Vector2(0), Vector2(256)), 0.5, 2.0, Vector2(5, 0));
 	for (int i = 0; i < 300; i++)
 		dune.SimulationStepMultiThreadAtomic();
 	dune.ExportJPG("barchan.jpg");
