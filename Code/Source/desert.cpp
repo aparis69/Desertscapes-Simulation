@@ -8,7 +8,6 @@
 #include "stb_image_write.h"
 
 
-
 /*!
 \brief Default constructor.
 */
@@ -59,6 +58,10 @@ DuneSediment::DuneSediment(const Box2D& bbox, float rMin, float rMax, const Vect
 			sediments.Set(i, j, Random::Uniform(rMin, rMax));
 		}
 	}
+	
+	// By default, vegetation influence and abrasion are turned off.
+	vegetationOn = false;
+	abrasionOn = false;
 
 	Vector2 celldiagonal = Vector2((box.TopRight()[0] - box.BottomLeft()[0]) / (nx - 1), (box.TopRight()[1] - box.BottomLeft()[1]) / (ny - 1));
 	cellSize = Box2D(box.BottomLeft(), box.BottomLeft() + celldiagonal).Size().x; // We only consider squared heightfields

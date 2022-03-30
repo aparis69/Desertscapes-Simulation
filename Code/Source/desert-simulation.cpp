@@ -5,6 +5,7 @@
 
 // File scope variables
 #define OMP_NUM_THREAD 8
+#define MAX_BOUNCE 3
 
 static float abrasionEpsilon = 0.5;
 static Vector2i next8[8] = { Vector2i(1, 0), Vector2i(1, 1), Vector2i(0, 1), Vector2i(-1, 1), Vector2i(-1, 0), Vector2i(-1, -1), Vector2i(0, -1), Vector2i(1, -1) };
@@ -77,7 +78,7 @@ void DuneSediment::SimulationStepWorldSpace()
 		return;
 	}
 	// Vegetation can retain sediments in the lifting process
-	if (Random::Uniform() < vegetation[start1D])
+	if (vegetationOn && Random::Uniform() < vegetation[start1D])
 	{
 		StabilizeSedimentRelative(startI, startJ);
 		return;
@@ -92,7 +93,7 @@ void DuneSediment::SimulationStepWorldSpace()
 	int destJ = startJ;
 	Vector2 pos = bedrock.ArrayVertex(destI, destJ);
 	int bounce = 0;
-	while (true)
+	while (bounce < MAX_BOUNCE)
 	{
 		// Compute wind at the current cell
 		ComputeWindAtCell(destI, destJ, windDir);
@@ -120,14 +121,14 @@ void DuneSediment::SimulationStepWorldSpace()
 			break;
 		}
 		// Sandy cell - 60% chance of deposition (if vegetation == 0.0)
-		else if (sediments.Get(destID) > 0.0 && p < 0.6 + (vegetation.Get(destID) * 0.4))
+		else if (sediments.Get(destID) > 0.0 && p < 0.6 + (vegetationOn ? (vegetation.Get(destID) * 0.4) : 0.0))
 		{
 #pragma omp atomic
 			sediments[destID] += matterToMove;
 			break;
 		}
 		// Empty cell - 40% chance of deposition (if vegetation == 0.0)
-		else if (sediments.Get(destID) <= 0.0 && p < 0.4 + (vegetation.Get(destID) * 0.6))
+		else if (sediments.Get(destID) <= 0.0 && p < 0.4 + (vegetationOn ? (vegetation.Get(destID) * 0.6) : 0.0))
 		{
 #pragma omp atomic
 			sediments[destID] += matterToMove;
@@ -237,7 +238,7 @@ void DuneSediment::PerformAbrasionOnCell(int i, int j, const Vector2& windDir)
 	int id = ToIndex1D(i, j);
 
 	// Vegetation protects from abrasion
-	float v = vegetation.Get(id);
+	float v = vegetationOn ? vegetation.Get(id) : 0.0f;
 
 	// Bedrock resistance [0, 1] (1.0 equals to weak, 0.0 equals to hard)
 	// Here with a simple sin() function, but anything could be used: texture, noise, construction trees...
