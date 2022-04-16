@@ -20,7 +20,7 @@ Hence, the results as well as the timings may differ from the ones in the paper.
 There is no dependency. Running the program will output 3 .jpg files (heightmaps/elevation maps). Tests have been made on:
 * Visual Studio 2017: double click on the solution in ./VS2017/ and Ctrl + F5 to run
 * Visual Studio 2019: double click on the solution in ./VS2019/ and Ctrl + F5 to run
-* Visual Studio 2019: double click on the solution in ./VS2022/ and Ctrl + F5 to run
+* Visual Studio 2022: double click on the solution in ./VS2022/ and Ctrl + F5 to run
 * Ubuntu 16.04: cd ./G++/ && make && ./Out/Desertscape
 
 In you can't compile or run the code, the resulting jpg files are available in the Results/ folder in the repo.
