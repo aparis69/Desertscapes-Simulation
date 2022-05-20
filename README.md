@@ -11,6 +11,8 @@ and presented at Pacific Graphics 2019. This is aimed at researchers, students o
 
 [Paper](https://drive.google.com/file/d/1-655HLtI1zV6aHD13GYZEqdJ_Zkoa-lB/view)
 
+This implementation has been labelled by the GRSI (Graphics Replicability Stamp Initiative), see [here](http://www.replicabilitystamp.org/) for more details.
+
 ### Important notes
 * This code is **not** the one which produced the scenes seen in the paper. Everything has been *recoded* on my side to make sure it is free to use. The original code from the paper is dependent on internal libraries of my team.
 Hence, the results as well as the timings may differ from the ones in the paper.
