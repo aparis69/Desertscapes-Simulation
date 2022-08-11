@@ -28,7 +28,7 @@ There is no dependency. Running the program will output 3 .jpg files (heightmaps
 In you can't compile or run the code, the resulting jpg files are available in the Results/ folder in the repo.
 
 ### Citation
-You can use this code in any way you want, however please credit the original article:
+If you use this code in any way, please credit the original article:
 ```
 @article {Paris2019Desert,
     author = {Paris, Axel and Galin, Eric and Peytavie,
